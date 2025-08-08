@@ -1,5 +1,3 @@
-import React from "react";
-
 type WorkItem = {
     title: string;
     description: string;

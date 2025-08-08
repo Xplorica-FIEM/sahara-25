@@ -1,5 +1,3 @@
-import React from "react";
-
 const Navbar: React.FC = () => {
     return (
         <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl bg-amber-100 shadow-lg rounded-xl px-6 py-2 flex items-center justify-between border-amber-700 border-1">

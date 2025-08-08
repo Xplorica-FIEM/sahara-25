@@ -1,5 +1,3 @@
-import React from "react";
-
 const Motivate = () => {
     const images = [
         { src: "/images/gallery/1.webp", alt: "Gallery 1" },
