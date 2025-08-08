@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail } from "lucide-react";
+import { Facebook, Instagram, Linkedin} from "lucide-react";
 
 const Footer = () => {
     return (
@@ -58,14 +58,26 @@ const Footer = () => {
                             Follow Us
                         </h3>
                         <div className="flex space-x-4">
-                            <a href="#" className="hover:text-amber-400">
-                                <Facebook />
-                            </a>
-                            <a href="#" className="hover:text-amber-400">
+                            <a
+                                href="https://instagram.com/xplorica.fiem"
+                                className="hover:text-amber-400"
+                                target="_blank"
+                            >
                                 <Instagram />
                             </a>
-                            <a href="#" className="hover:text-amber-400">
-                                <Mail />
+                            <a
+                                href="https://www.facebook.com/XplOriCa.fiem"
+                                className="hover:text-amber-400"
+                                target="_blank"
+                            >
+                                <Facebook />
+                            </a>
+                            <a
+                                href="https://www.linkedin.com/company/xplorica"
+                                className="hover:text-amber-400"
+                                target="_blank"
+                            >
+                                <Linkedin />
                             </a>
                         </div>
                     </div>
@@ -74,7 +86,7 @@ const Footer = () => {
                 <hr className="my-10 border-slate-700" />
 
                 <p className="text-center text-xs text-slate-500">
-                    &copy;{new Date().getFullYear()} XPLORICA. All rights
+                    &copy;{new Date().getFullYear()} XPLORICA, All rights
                     reserved.
                     <br />
                     All funds raised go directly towards supporting our mission

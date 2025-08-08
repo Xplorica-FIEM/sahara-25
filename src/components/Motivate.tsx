@@ -45,11 +45,16 @@ const Motivate = () => {
 
             {/* Full-width image below grid */}
             <div className="w-full mt-2 px-4 mx-auto max-w-6xl">
-                <img
-                    src="/images/final.webp"
-                    alt="Final"
-                    className="w-full rounded-xl shadow-lg object-cover"
-                />
+                <div className="relative w-full">
+                    <img
+                        src="/images/final.webp"
+                        alt="Final"
+                        className="w-full rounded-xl shadow-lg object-cover"
+                    />
+                    <div className="absolute bottom-4 left-4 text-white text-xl font-semibold bg-black/50 px-3 py-1 rounded-md">
+                        Sahara 2024
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ const Navbar: React.FC = () => {
                     href="#"
                     className="text-gray-800  transition font-bold text-2xl ml-3"
                 >
-                    सhara
+                    सh<span className="italic text-amber-700 -ml-1">a</span>ra
                 </a>
                 <div className="flex space-x-4">
                     <a
