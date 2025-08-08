@@ -2,7 +2,7 @@ const Hero = () => {
     return (
         <div className="relative h-screen w-full">
             <img
-                src="/images/hero.jpg"
+                src="/images/hero.webp"
                 alt="smile"
                 className="w-full h-full object-cover"
             />

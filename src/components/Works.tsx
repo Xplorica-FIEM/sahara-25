@@ -9,18 +9,18 @@ const workItems: WorkItem[] = [
         title: "Art Therapy",
         description:
             "Watch self-expression become healing — one brushstroke at a time.",
-        image: "/images/works/drawing.jpg",
+        image: "/images/works/drawing.webp",
     },
     {
         title: "Education Outreach",
         description:
             "From forgotten corners to open books — learning finds a way.",
-        image: "/images/works/play.jpg",
+        image: "/images/works/play.webp",
     },
     {
         title: "Play and Learn",
         description: "See curiosity bloom where play meets purpose.",
-        image: "/images/works/tree.jpg",
+        image: "/images/works/tree.webp",
     },
 ];
 

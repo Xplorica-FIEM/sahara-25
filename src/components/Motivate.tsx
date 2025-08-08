@@ -28,7 +28,7 @@ const Motivate = () => {
             </p>
 
             {/* Grid Image Gallery */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 max-w-6xl w-full px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 max-w-6xl w-full px-4 mx-auto">
                 {images.map((image, index) => (
                     <div
                         key={index}
@@ -41,6 +41,15 @@ const Motivate = () => {
                         />
                     </div>
                 ))}
+            </div>
+
+            {/* Full-width image below grid */}
+            <div className="w-full mt-2 px-4 mx-auto max-w-6xl">
+                <img
+                    src="/images/final.webp"
+                    alt="Final"
+                    className="w-full rounded-xl shadow-lg object-cover"
+                />
             </div>
         </div>
     );
