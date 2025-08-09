@@ -7,7 +7,6 @@ const Hero = () => {
                 className="w-full h-full object-cover"
             />
 
-            {/* Overlay Text */}
             <div className="absolute top-1/3 left-8 md:left-16 lg:left-36 text-white max-w-xl text-shadow-lg/30">
                 <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
                     They didn&apos;t choose this life.

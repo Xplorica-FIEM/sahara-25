@@ -27,7 +27,6 @@ const Motivate = () => {
                 used.
             </p>
 
-            {/* Grid Image Gallery */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 max-w-6xl w-full px-4 mx-auto">
                 {images.map((image, index) => (
                     <div
@@ -43,7 +42,6 @@ const Motivate = () => {
                 ))}
             </div>
 
-            {/* Full-width image below grid */}
             <div className="w-full mt-2 px-4 mx-auto max-w-6xl">
                 <div className="relative w-full">
                     <img
