@@ -21,7 +21,7 @@ export default function PaymentForm() {
     };
 
     return (
-        <div className="w-full max-w-sm bg-white rounded-lg shadow-lg p-3 border border-amber-500">
+        <div className="w-full max-w-sm bg-white rounded-lg shadow-lg p-3 border border-teal-500">
             <div className="text-center pb-4 border-b border-gray-300">
                 <h1 className="text-base md:text-lg font-semibold text-gray-700">
                     Choose an amount to give per month
@@ -39,7 +39,7 @@ export default function PaymentForm() {
                             }}
                             className={`col-span-2 py-3 px-2 rounded-lg border transition-all text-sm font-medium ${
                                 selectedAmount === option.amount
-                                    ? "bg-amber-500 border-amber-600 text-white"
+                                    ? "bg-teal-500 border-teal-600 text-white"
                                     : "bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200"
                             }`}
                         >
@@ -54,13 +54,13 @@ export default function PaymentForm() {
                         onChange={(e) => handleCustomAmount(e.target.value)}
                         className={`col-span-4 py-3 px-2 rounded-lg border text-sm font-medium text-center focus:outline-none focus:ring-2 ${
                             selectedAmount === 0 && customAmount
-                                ? "bg-amber-100 border-amber-500 ring-amber-300"
+                                ? "bg-teal-100 border-teal-500 ring-teal-300"
                                 : "bg-gray-100 border-gray-300"
                         }`}
                     />
                 </div>
 
-                <button className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm py-3 rounded-lg transition-colors duration-200">
+                <button className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold text-sm py-3 rounded-lg transition-colors duration-200">
                     DONATE {selectedAmount > 0 ? `₹${selectedAmount}` : ""}
                 </button>
 

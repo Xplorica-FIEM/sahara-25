@@ -8,7 +8,7 @@ const Payment = () => {
             id="donate"
         >
             <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 mt-10 text-gray-700">
-                Over <span className="text-amber-500">260 million</span>{" "}
+                Over <span className="text-teal-500">260 million</span>{" "}
                 children around the world <br /> still lack access to basic
                 education.
             </h1>

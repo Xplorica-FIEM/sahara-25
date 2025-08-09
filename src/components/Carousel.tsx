@@ -31,7 +31,7 @@ export default function DonorCarousel() {
                 ].map((name, i) => (
                     <span
                         key={`row1-${i}`}
-                        className="text-base text-amber-500 opacity-70 font-medium"
+                        className="text-base text-teal-500 opacity-70 font-medium"
                     >
                         {name}
                     </span>
@@ -51,7 +51,7 @@ export default function DonorCarousel() {
                 ].map((name, i) => (
                     <span
                         key={`row2-${i}`}
-                        className="text-lg text-amber-500 opacity-70 font-medium"
+                        className="text-lg text-teal-500 opacity-70 font-medium"
                     >
                         {name}
                     </span>

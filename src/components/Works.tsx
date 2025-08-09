@@ -28,11 +28,11 @@ const workItems: WorkItem[] = [
 const Works: React.FC = () => {
     return (
         <div
-            className="min-h-screen w-full flex flex-col items-center bg-amber-50 p-5 pt-24"
+            className="min-h-screen w-full flex flex-col items-center bg-teal-50 p-5 pt-24"
             id="mission"
         >
             <div className="text-center mb-12">
-                <h3 className="text-xl md:text-2xl font-semibold text-amber-900">
+                <h3 className="text-xl md:text-2xl font-semibold text-teal-900">
                     why?
                 </h3>
                 <h1 className="text-3xl md:text-4xl font-bold leading-tight drop-shadow-lg">
@@ -44,7 +44,7 @@ const Works: React.FC = () => {
                 {workItems.map((item, index) => (
                     <div
                         key={index}
-                        className={`relative flex-1 rounded-xl overflow-hidden shadow-md border border-amber-700 group transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                        className={`relative flex-1 rounded-xl overflow-hidden shadow-md border border-teal-700 group transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
                             index === 2 ? "hidden md:block" : ""
                         }`}
                     >
@@ -56,7 +56,7 @@ const Works: React.FC = () => {
                         <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
 
                         <div className="relative z-20 flex flex-col justify-center drop-shadow-lg items-center text-center h-full mt-[50%] text-white px-4">
-                            <h2 className="text-2xl font-bold mb-2 text-amber-400">
+                            <h2 className="text-2xl font-bold mb-2 text-teal-400">
                                 {item.title}
                             </h2>
                             <p className="text-sm ">{item.description}</p>
