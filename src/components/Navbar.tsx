@@ -7,7 +7,6 @@ const Navbar: React.FC = () => {
     return (
         <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl bg-amber-100 shadow-lg rounded-xl px-6 py-2 flex items-center justify-between border-amber-700 border">
             <div className="flex items-center justify-between w-full">
-
                 <a href="#" className="text-gray-800 font-bold text-2xl ml-3">
                     सh<span className="italic text-amber-700 -ml-1">a</span>ra
                 </a>
@@ -35,10 +34,11 @@ const Navbar: React.FC = () => {
 
                 <a
                     href="https://xplorica.in"
-                    className="hidden md:block text-gray-800 transition font-semibold hover:bg-amber-200/50 duration-150 rounded-md p-1 text-right"
+                    className="text-gray-800 font-semibold transition hover:bg-amber-200/50 duration-150 rounded-md p-2 text-right flex items-center gap-2"
+                    onClick={() => setIsOpen(false)}
                 >
-                    <h2 className="-mb-2 text-black/60 px-7">from</h2>
-                    <h1>XPLORICA</h1>
+                    <h1 className="text-base/5 text-black/60">an initiative <br />from</h1>
+                    <img src="/images/xplorica-logo.png" alt="XPLORICA" className="w-10 h-10 mix-blend-multiply"/>
                 </a>
 
                 <button
@@ -77,8 +77,7 @@ const Navbar: React.FC = () => {
                         className="text-gray-800 font-semibold transition hover:bg-amber-200/50 duration-150 rounded-md p-2 text-right"
                         onClick={() => setIsOpen(false)}
                     >
-                        <h2 className="-mb-1 text-black/60">from</h2>
-                        <h1>XPLORICA</h1>
+                        <img src="/images/xplorica-logo.png" alt="XPLORICA" className="w-10 h-10 mix-blend-multiply"/>
                     </a>
                 </div>
             )}

@@ -10,3 +10,23 @@ html,
 body {
   overscroll-behavior: none;
 }
+
+@keyframes scroll-left-fast {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-left-slow {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
