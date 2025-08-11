@@ -3,13 +3,11 @@ import { Facebook, Instagram, Linkedin } from "lucide-react";
 const Footer = () => {
     return (
         <footer className="bg-teal-50 w-full px-6 pt-16 pb-10">
-            {/* Centered container */}
             <div className="max-w-7xl mx-auto w-full">
                 <div className="flex flex-col md:flex-row flex-wrap justify-between">
-                    {/* Brand */}
                     <div className="basis-full md:basis-60 mb-8 md:mb-0">
                         <h2 className="text-2xl font-bold text-teal-400 mb-4">
-                            सhara
+                            साhara
                         </h2>
                         <p className="text-sm leading-relaxed">
                             Empowering kids through hands-on learning and <br />
@@ -17,7 +15,6 @@ const Footer = () => {
                         </p>
                     </div>
 
-                    {/* Quick Links */}
                     <div className="basis-full md:basis-40 mb-8 md:mb-0">
                         <h3 className="text-lg font-semibold mb-3 text-teal-400">
                             Quick Links
@@ -47,12 +44,12 @@ const Footer = () => {
                             Contact Us
                         </h3>
                         <p className="text-sm leading-relaxed">
-                            Email: sahara@xplorica.in <br />
+                            Email: xplorica@teamfuture.in <br />
+                            Mobile: +919831658714 <br />
                             Address: 123 Maker Street, Imagineland, Earth
                         </p>
                     </div>
 
-                    {/* Social */}
                     <div className="basis-full md:basis-40">
                         <h3 className="text-lg font-semibold mb-3 text-teal-400">
                             Follow Us

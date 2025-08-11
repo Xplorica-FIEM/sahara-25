@@ -34,10 +34,10 @@ const Navbar: React.FC = () => {
 
                 <a
                     href="https://xplorica.in"
-                    className="text-gray-800 font-semibold transition hover:bg-teal-200/50 duration-150 rounded-md p-2 text-right flex items-center gap-2"
+                    className="text-gray-800 font-semibold transition hover:bg-teal-200/50 duration-150 rounded-md p-2 text-right flex items-center gap-2 -mr-15 md:mr-0"
                     onClick={() => setIsOpen(false)}
                 >
-                    <h1 className="text-base/5 text-black/60">
+                    <h1 className="md:text-base/5 text-black/60 text-sm/5">
                         an initiative <br />
                         from
                     </h1>
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
                     </a>
                     <a
                         href="https://xplorica.in"
-                        className="text-gray-800 font-semibold transition hover:bg-teal-200/50 duration-150 rounded-md p-2 text-right"
+                        className="flex justify-center items-center text-gray-800 font-semibold transition hover:bg-teal-200/50 duration-150 rounded-md p-2"
                         onClick={() => setIsOpen(false)}
                     >
                         <img

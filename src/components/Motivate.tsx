@@ -18,11 +18,24 @@ const Motivate = () => {
             id="gallery"
         >
             <PrevYear />
+
+            <div className="relative flex justify-center md:w-1/2 -mt-4">
+                <img
+                    src="/images/trasparency/2024.jpg"
+                    alt="Final"
+                    className="max-w-full rounded-xl shadow-lg object-cover"
+                />
+                <div className="absolute md:bottom-4 bottom-2 md:left-4 left-2 text-white md:text-md text-xs font-semibold bg-black/50 px-3 py-1 rounded-md">
+                    Sahara 2024 Donation Transparency
+                </div>
+            </div>
+
+
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 mt-16">
                 Know that your donation is making a{" "}
                 <span className="text-teal-400">difference</span>
             </h1>
-            <p className="text-base md:text-lg text-teal-700 text-center w-2/3 mb-10">
+            <p className="text-base md:text-lg text-teal-700 text-center md:w-2/3 mb-10">
                 Sahara uses 100% of your donation to teach, empower, and inspire
                 the next generation of makers, from the bottom of the social
                 ladder. We provide names and photos of all of our funding
