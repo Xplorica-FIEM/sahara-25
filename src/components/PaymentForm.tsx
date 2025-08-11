@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Lock } from "lucide-react";
 
 export default function PaymentForm() {
-    const [selectedAmount, setSelectedAmount] = useState(3200);
+    const [selectedAmount, setSelectedAmount] = useState(0);
     const [customAmount, setCustomAmount] = useState("");
 
     const donationOptions = [

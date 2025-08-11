@@ -40,26 +40,23 @@ const Works: React.FC = () => {
                 </h1>
             </div>
 
-            <div className="flex flex-1 w-full max-w-6xl gap-4 h-[400px]">
+            <div className="flex flex-col md:flex-row flex-1 w-full max-w-6xl gap-4">
                 {workItems.map((item, index) => (
                     <div
                         key={index}
-                        className={`relative flex-1 rounded-xl overflow-hidden shadow-md border border-teal-700 group transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                            index === 2 ? "hidden md:block" : ""
-                        }`}
+                        className={`relative flex-1 rounded-xl overflow-hidden shadow-md border border-teal-700 group transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${index === 2 ? "hidden md:block" : ""
+                            }`}
                     >
                         <div
                             className="absolute inset-0 bg-cover bg-center transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105 group-hover:brightness-120"
                             style={{ backgroundImage: `url(${item.image})` }}
                         />
-
                         <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
-
-                        <div className="relative z-20 flex flex-col justify-center drop-shadow-lg items-center text-center h-full mt-[50%] text-white px-4">
-                            <h2 className="text-2xl font-bold mb-2 text-teal-400">
+                        <div className="relative z-20 flex flex-col justify-center items-center text-center h-full min-h-[200px] md:min-h-[400px] text-white px-4 py-6">
+                            <h2 className="text-xl md:text-2xl font-bold mb-2 text-teal-400">
                                 {item.title}
                             </h2>
-                            <p className="text-sm ">{item.description}</p>
+                            <p className="text-sm">{item.description}</p>
                         </div>
                     </div>
                 ))}

@@ -5,7 +5,7 @@ const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl bg-teal-100 shadow-lg rounded-xl px-6 py-2 flex items-center justify-between border-teal-700 border">
+        <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl bg-teal-100 shadow-lg rounded-xl md:px-6 md:py-2 px-3 py-1 flex items-center justify-between border-teal-700 border">
             <div className="flex items-center justify-between w-full">
                 <a href="#" className="text-gray-800 font-bold text-2xl ml-3">
                     साh<span className="italic text-teal-700 -ml-1">a</span>ra

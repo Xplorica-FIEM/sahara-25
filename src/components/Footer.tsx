@@ -1,24 +1,24 @@
-import { Facebook, Instagram, Linkedin} from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
     return (
         <footer className="bg-teal-50 w-full px-6 pt-16 pb-10">
             {/* Centered container */}
             <div className="max-w-7xl mx-auto w-full">
-                <div className="flex flex-col md:flex-row flex-wrap justify-between gap-10">
+                <div className="flex flex-col md:flex-row flex-wrap justify-between">
                     {/* Brand */}
-                    <div className="basis-60">
+                    <div className="basis-full md:basis-60 mb-8 md:mb-0">
                         <h2 className="text-2xl font-bold text-teal-400 mb-4">
                             सhara
                         </h2>
-                        <p className="text-sm">
+                        <p className="text-sm leading-relaxed">
                             Empowering kids through hands-on learning and <br />
                             creativity. Your support builds futures.
                         </p>
                     </div>
 
                     {/* Quick Links */}
-                    <div className="basis-40">
+                    <div className="basis-full md:basis-40 mb-8 md:mb-0">
                         <h3 className="text-lg font-semibold mb-3 text-teal-400">
                             Quick Links
                         </h3>
@@ -42,18 +42,18 @@ const Footer = () => {
                     </div>
 
                     {/* Contact */}
-                    <div className="basis-60">
+                    <div className="basis-full md:basis-60 mb-8 md:mb-0">
                         <h3 className="text-lg font-semibold mb-3 text-teal-400">
                             Contact Us
                         </h3>
-                        <p className="text-sm">
+                        <p className="text-sm leading-relaxed">
                             Email: sahara@xplorica.in <br />
                             Address: 123 Maker Street, Imagineland, Earth
                         </p>
                     </div>
 
                     {/* Social */}
-                    <div className="basis-40">
+                    <div className="basis-full md:basis-40">
                         <h3 className="text-lg font-semibold mb-3 text-teal-400">
                             Follow Us
                         </h3>
@@ -62,6 +62,7 @@ const Footer = () => {
                                 href="https://instagram.com/xplorica.fiem"
                                 className="hover:text-teal-400"
                                 target="_blank"
+                                rel="noreferrer"
                             >
                                 <Instagram />
                             </a>
@@ -69,6 +70,7 @@ const Footer = () => {
                                 href="https://www.facebook.com/XplOriCa.fiem"
                                 className="hover:text-teal-400"
                                 target="_blank"
+                                rel="noreferrer"
                             >
                                 <Facebook />
                             </a>
@@ -76,6 +78,7 @@ const Footer = () => {
                                 href="https://www.linkedin.com/company/xplorica"
                                 className="hover:text-teal-400"
                                 target="_blank"
+                                rel="noreferrer"
                             >
                                 <Linkedin />
                             </a>
@@ -83,9 +86,9 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <hr className="my-10 border-slate-700" />
+                <hr className="my-10 border-slate-300" />
 
-                <p className="text-center text-xs text-slate-500">
+                <p className="text-center text-xs text-slate-500 leading-relaxed">
                     &copy;{new Date().getFullYear()} XPLORICA, All rights
                     reserved.
                     <br />
