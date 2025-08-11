@@ -1,3 +1,5 @@
+import PrevYear from "./PrevYears";
+
 const Motivate = () => {
     const images = [
         { src: "/images/gallery/1.webp", alt: "Gallery 1" },
@@ -15,6 +17,7 @@ const Motivate = () => {
             className="min-h-screen flex flex-col items-center bg-slate-900 text-white p-5 pt-24 pb-10"
             id="gallery"
         >
+            <PrevYear />
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 mt-16">
                 Know that your donation is making a{" "}
                 <span className="text-teal-400">difference</span>
