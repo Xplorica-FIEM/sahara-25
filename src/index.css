@@ -11,9 +11,9 @@ body {
   overscroll-behavior: none;
 }
 
-@keyframes scroll-left-fast {
+@keyframes carousel-scroll {
   0% {
-    transform: translateX(0%);
+    transform: translateX(0);
   }
 
   100% {
@@ -21,12 +21,6 @@ body {
   }
 }
 
-@keyframes scroll-left-slow {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+.animate-carousel {
+  animation: carousel-scroll 30s linear infinite;
 }

@@ -24,7 +24,7 @@ export default function PaymentForm() {
         <div className="w-full max-w-sm bg-white rounded-lg shadow-lg p-3 border border-teal-500">
             <div className="text-center pb-4 border-b border-gray-300">
                 <h1 className="text-base md:text-lg font-semibold text-gray-700">
-                    Choose an amount to give per month
+                    Choose an amount to donate and make a change
                 </h1>
             </div>
 

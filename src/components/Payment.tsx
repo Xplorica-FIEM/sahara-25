@@ -12,11 +12,11 @@ const Payment = () => {
                 children around the world <br /> still lack access to basic
                 education.
             </h1>
-            <p className="text-sm md:text-base text-gray-700 text-center max-w-2xl mb-8">
+            {/* <p className="text-sm md:text-base text-gray-700 text-center max-w-2xl mb-8">
                 Your contribution helps us teach problem-solving, creativity,
                 and technical skills through hands-on learning, empowering the
                 next generation of makers.
-            </p>
+            </p> */}
 
             <PaymentForm />
             <DonorCarousel/>
