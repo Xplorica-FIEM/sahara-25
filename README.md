@@ -67,3 +67,24 @@ export default tseslint.config([
   },
 ])
 ```
+
+## Payments (Razorpay) Setup
+
+Create these env files:
+
+- `sahara-25/.env` (frontend)
+
+  VITE_RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxx
+  VITE_API_BASE_URL=http://localhost:5000
+
+- `sahara-25-backend/.env` (backend)
+
+  RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxx
+  RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxx
+
+Run locally:
+
+1. Backend: inside `sahara-25-backend` run: `npm install` then `npm run dev`.
+2. Frontend: inside `sahara-25` run: `npm install` then `npm run dev`.
+
+The Donate button creates an order, opens Razorpay Checkout, and verifies the payment server-side.

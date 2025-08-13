@@ -44,9 +44,16 @@ const Footer = () => {
                             Contact Us
                         </h3>
                         <p className="text-sm leading-relaxed">
-                            Email: xplorica@teamfuture.in <br />
-                            Mobile: +919831658714 <br />
-                            Address: 123 Maker Street, Imagineland, Earth
+                            Email: <a href="mailto:xplorica@teamfuture.in" className="hover:underline">xplorica@teamfuture.in</a> <br />
+                            Mobile: <a href="tel:+919831658714" className="hover:underline">+919831658714</a> <br />
+                            Address: <a
+                                href="https://maps.app.goo.gl/AJ3ZXVeJFiCSJhy56"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:underline"
+                            >
+                                Sonarpur Station Road, Kolkata , 700150, India
+                            </a>
                         </p>
                     </div>
 
