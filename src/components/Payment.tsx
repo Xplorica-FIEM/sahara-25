@@ -1,6 +1,7 @@
 import DonorCarousel from "./Carousel";
 import PaymentForm from "./PaymentForm";
 import FeatureRule from "../data/Feature.Rules";
+import PaymentButton from "./PaymentButton";
 
 const Payment = () => {
   return (
@@ -18,7 +19,7 @@ const Payment = () => {
                 next generation of makers.
             </p> */}
 
-      <PaymentForm />
+      {FeatureRule?.paymentButton ? <PaymentButton /> : <PaymentForm />}
 
       {FeatureRule?.ShowDonors && <DonorCarousel />}
     </div>
