@@ -7,7 +7,7 @@ const Footer = () => {
                 <div className="flex flex-col md:flex-row flex-wrap justify-between">
                     <div className="basis-full md:basis-60 mb-8 md:mb-0">
                         <h2 className="text-2xl font-bold text-teal-400 mb-4">
-                            साhara
+                            सhara
                         </h2>
                         <p className="text-sm leading-relaxed">
                             Empowering kids through hands-on learning and <br />

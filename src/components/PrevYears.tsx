@@ -52,6 +52,10 @@ export default function PrevYear() {
                     <p className="text-sm md:text-lg text-gray-600 mb-2">
                       📍 {event.venue.name}
                     </p>
+                    {/* New: label above the amount */}
+                    <p className="text-xs md:text-sm text-gray-500">
+                      Collected amount
+                    </p>
                     <p className="text-lg md:text-3xl font-semibold text-gray-800 mb-4">
                       ₹{event.collected_amount.toLocaleString()}
                     </p>

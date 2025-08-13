@@ -5,15 +5,8 @@ import { loadRazorpayScript } from "../lib/razorpay";
 import AmountSelector from "./AmountSelector";
 import DonorDetailsForm from "./DonorDetailsForm";
 import SecurePaymentFooter from "./SecurePaymentFooter";
-
-declare global {
-  interface Window {
-    Razorpay: new (options: any) => {
-      open: () => void;
-      on: (evt: string, cb: (data: any) => void) => void;
-    };
-  }
-}
+import PaymentSuccessCard from "./PaymentForm/PaymentSuccessCard";
+import PaymentErrorCard from "./PaymentForm/PaymentErrorCard";
 
 export default function PaymentForm() {
   const [selectedAmount, setSelectedAmount] = useState(0);
@@ -164,7 +157,7 @@ export default function PaymentForm() {
         key: razorpayKeyId,
         amount: order.amount, // in subunits from backend
         currency: order.currency,
-        name: "Donation",
+        name: "Sahara",
         description: "Sahara 2025 Donation",
         order_id: order.id,
         prefill: {
@@ -239,7 +232,7 @@ export default function PaymentForm() {
         theme: { color: "#14b8a6" },
       };
 
-      const rzp = new window.Razorpay(options);
+      const rzp = new (window as any).Razorpay(options);
 
       // New: listen for payment failure emitted by Razorpay
       rzp.on("payment.failed", (resp: any) => {
@@ -287,121 +280,107 @@ export default function PaymentForm() {
 
         {/* Step 2: Donor details only */}
         {stage === "details" && (
-          <DonorDetailsForm
-            donorName={donorName}
-            setDonorName={setDonorName}
-            donorEmail={donorEmail}
-            setDonorEmail={setDonorEmail}
-            donorMobile={donorMobile}
-            setDonorMobile={setDonorMobile}
-            turnstileSiteKey={turnstileSiteKey}
-            onVerifyCaptcha={(token) => {
-              setCaptchaToken(token);
-              setError(null);
-            }}
-            onExpireCaptcha={() => {
-              setCaptchaToken(null);
-              setError("Captcha expired. Please verify again.");
-            }}
-            onErrorCaptcha={() => {
-              setCaptchaToken(null);
-              setError("Captcha error. Please reload or try again.");
-            }}
-          />
+          <>
+            {selectedAmount > 0 && (
+              <div className="flex items-center justify-between rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-sm text-teal-800">
+                <div className="flex items-baseline gap-2">
+                  <span>You're donating</span>
+                  <span className="font-semibold">
+                    ₹{selectedAmount.toLocaleString("en-IN")}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStage("amount");
+                    setError(null);
+                  }}
+                  className="text-xs font-semibold text-teal-700 hover:text-teal-800 hover:underline"
+                  aria-label="Change donation amount"
+                >
+                  Change amount
+                </button>
+              </div>
+            )}
+            <DonorDetailsForm
+              donorName={donorName}
+              setDonorName={setDonorName}
+              donorEmail={donorEmail}
+              setDonorEmail={setDonorEmail}
+              donorMobile={donorMobile}
+              setDonorMobile={setDonorMobile}
+              turnstileSiteKey={turnstileSiteKey}
+              onVerifyCaptcha={(token) => {
+                setCaptchaToken(token);
+                setError(null);
+              }}
+              onExpireCaptcha={() => {
+                setCaptchaToken(null);
+                setError("Captcha expired. Please verify again.");
+              }}
+              onErrorCaptcha={() => {
+                setCaptchaToken(null);
+                setError("Captcha error. Please reload or try again.");
+              }}
+            />
+          </>
         )}
 
         {/* Step 3: Success screen */}
         {stage === "success" && successInfo && (
-          <div className="rounded-lg border border-green-300 bg-green-50 p-4 text-green-800">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-block h-2 w-2 rounded-full bg-green-600"></span>
-              <p className="font-semibold">Thank you! Your payment is confirmed.</p>
-            </div>
-            <div className="text-sm space-y-1 text-gray-700">
-              <p>
-                Amount:{" "}
-                <span className="font-medium">
-                  ₹{(successInfo.amount / 100).toFixed(2)} {successInfo.currency}
-                </span>
-              </p>
-              <p>
-                Payment ID:{" "}
-                <span className="font-mono">{successInfo.paymentId}</span>
-              </p>
-              <p>
-                Order ID:{" "}
-                <span className="font-mono">{successInfo.orderId}</span>
-              </p>
-              <p>
-                Status:{" "}
-                <span className="font-medium capitalize">{successInfo.status}</span>
-              </p>
-              {successInfo.method && (
-                <p>
-                  Method:{" "}
-                  <span className="font-medium uppercase">{successInfo.method}</span>
-                </p>
-              )}
-            </div>
-          </div>
+          <PaymentSuccessCard
+            title="Thank you! Your donation has been received."
+            amount={successInfo.amount / 100}
+            currency={successInfo.currency}
+            reference={successInfo.paymentId}
+            date={new Date()}
+            status={successInfo.status}
+            method={successInfo.method}
+            primaryActionLabel="Donate Again"
+            onPrimaryAction={() => {
+              // Reset entire flow to first step
+              setStage("amount");
+              setSuccessInfo(null);
+              setError(null);
+              setErrorInfo(null);
+              setSelectedAmount(0);
+              setCustomAmount("");
+              setDonorName("");
+              setDonorEmail("");
+              setDonorMobile("");
+              setCaptchaToken(null);
+            }}
+          />
         )}
 
-        {/* New: Error screen */}
+        {/* Error screen replaced with component */}
         {stage === "error" && errorInfo && (
-          <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-red-800">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-block h-2 w-2 rounded-full bg-red-600"></span>
-              <p className="font-semibold">{errorInfo.title}</p>
-            </div>
-            <div className="text-sm space-y-1 text-gray-700">
-              <p>{errorInfo.message}</p>
-              {errorInfo.code && (
-                <p>
-                  Code:{" "}
-                  <span className="font-mono">{errorInfo.code}</span>
-                </p>
-              )}
-              {errorInfo.paymentId && (
-                <p>
-                  Payment ID:{" "}
-                  <span className="font-mono">{errorInfo.paymentId}</span>
-                </p>
-              )}
-              {errorInfo.orderId && (
-                <p>
-                  Order ID:{" "}
-                  <span className="font-mono">{errorInfo.orderId}</span>
-                </p>
-              )}
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  // Return user to details step for a quick retry
-                  setStage("details");
-                  setError(null);
-                  setErrorInfo(null);
-                }}
-                className="flex-1 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold py-2 px-3 rounded-lg"
-              >
-                Try again
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  // Start over from amount selection
-                  setStage("amount");
-                  setError(null);
-                  setErrorInfo(null);
-                  setSuccessInfo(null);
-                }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold py-2 px-3 rounded-lg"
-              >
-                Change amount
-              </button>
-            </div>
-          </div>
+          <PaymentErrorCard
+            title={errorInfo.title}
+            message={errorInfo.message}
+            code={errorInfo.code}
+            paymentId={errorInfo.paymentId}
+            orderId={errorInfo.orderId}
+            primaryActionLabel="Try again"
+            onPrimaryAction={() => {
+              setStage("details");
+              setError(null);
+              setErrorInfo(null);
+            }}
+            secondaryActionLabel="Donate Again"
+            onSecondaryAction={() => {
+              setStage("amount");
+              setError(null);
+              setErrorInfo(null);
+              setSuccessInfo(null);
+              setSelectedAmount(0);
+              setCustomAmount("");
+              setDonorName("");
+              setDonorEmail("");
+              setDonorMobile("");
+              setCaptchaToken(null);
+            }}
+          />
         )}
 
         {error && <p className="text-red-600 text-sm">{error}</p>}

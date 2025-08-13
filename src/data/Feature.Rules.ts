@@ -1,4 +1,5 @@
 const FeatureRule = {
+    eventName: "",
     ShowDonors: false
 }
 

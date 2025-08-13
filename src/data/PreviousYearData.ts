@@ -2,33 +2,33 @@ const DATA_PREVIOUS_YEAR = [
     {
         name: "Sahara 2024",
         venue: {
-            name: "Sahara Convention Center",
+            name: "Shoishob Foundation, Naktala",
             location: ""
         },
-        collected_amount: 15000,
-        image: "/images/final.webp",
-        facebook_link: "https://facebook.com/sahara2024"
+        collected_amount: 15608,
+        image: "/images/prev_year/sahara_24_venue_small.webp",
+        facebook_link: "https://www.facebook.com/share/p/1GRqsALoMg/"
     },
     {
         name: "Sahara 2023",
         venue: {
-            name: "Imagineland Auditorium",
+            name: "Tiyas School, Dostipur",
             location: ""
         },
-        collected_amount: 120000,
-        image: "https://picsum.photos/500/300?random=1",
-        facebook_link: "https://facebook.com"
+        collected_amount: 14000,
+        image: "/images/prev_year/sahara_23_venue_small.webp",
+        facebook_link: "https://www.facebook.com/share/1AzEdebXpT/"
     },
-    {
-        name: "Sahara 2022",
-        venue: {
-            name: "Central Park Hall",
-            location: ""
-        },
-        collected_amount: 85000,
-        image: "https://picsum.photos/500/300?random=2",
-        facebook_link: "https://facebook.com"
-    },
+    // {
+    //     name: "Sahara 2022",
+    //     venue: {
+    //         name: "Central Park Hall",
+    //         location: ""
+    //     },
+    //     collected_amount: 26163,
+    //     image: "",
+    //     facebook_link: "https://www.facebook.com/share/19SZQmeHqR/"
+    // },
 
 ];
 
