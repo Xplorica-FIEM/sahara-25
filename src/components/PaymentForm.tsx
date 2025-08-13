@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Lock } from "lucide-react";
 import { loadRazorpayScript } from "../lib/razorpay";
 import AmountSelector from "./AmountSelector";
 import DonorDetailsForm from "./DonorDetailsForm";
