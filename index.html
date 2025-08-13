@@ -5,14 +5,79 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>सhara (Sahara) - Empowering Young Minds</title>
-    <meta name="description" content="Empowering kids through hands-on learning and creativity with सhara (Sahara)." />
+    <!-- Updated SEO title and description -->
+    <title>Sahara - Donate to Support Children’s Education and Rat-Hole Miner Kids</title>
+    <meta name="description" content="Sahara is a donation drive helping underprivileged children especially those affected by rat-hole mining—access education, safety, and essential support. Donate today." />
+
+    <!-- Crawling and canonical -->
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <!-- Replace with your production URL -->
+    <link rel="canonical" href="https://sahara.xplorica.in/" />
+    <link rel="alternate" hreflang="en" href="https://sahara.xplorica.in/" />
+
+    <!-- Additional metadata -->
+    <meta name="application-name" content="Sahara" />
+    <meta name="keywords" content="Sahara, donation, donate, charity, nonprofit, children, kids, education, rat-hole mining, India, rescue, support, fundraiser" />
     <meta name="theme-color" content="#ccfbf1" />
 
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sahara" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Sahara — Donate to Support Children’s Education and Rat-Hole Miner Kids" />
+    <meta property="og:description" content="Help Sahara provide education, safety, and essential support to underprivileged children, especially those impacted by rat-hole mining. Your donation makes a difference." />
+    <!-- Replace with your production URL -->
+    <meta property="og:url" content="https://sahara.xplorica.in/" />
+    <!-- Replace with your hosted share image (1200x630 recommended) -->
+    <meta property="og:image" content="https://sahara.xplorica.in/social-share.png" />
+    <meta property="og:image:alt" content="Sahara donation drive — support children’s education" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sahara — Donate to Support Children’s Education and Rat-Hole Miner Kids" />
+    <meta name="twitter:description" content="Join Sahara’s donation drive to support underprivileged children, especially those affected by rat-hole mining. Donate today." />
+    <!-- Replace with your Twitter handle -->
+    <meta name="twitter:site" content="@SaharaOrg" />
+    <meta name="twitter:creator" content="@SaharaOrg" />
+    <!-- Replace with your hosted share image -->
+    <meta name="twitter:image" content="https://sahara.xplorica.in/social-share.png" />
+
+    <!-- Favicons / PWA (ensure these assets exist) -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <!-- Structured data: Nonprofit with DonateAction (replace example.org and social links) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "NonprofitOrganization",
+        "name": "Sahara",
+        "url": "https://sahara.xplorica.in/",
+        "logo": "https://sahara.xplorica.in/images/xplorica-logo.png",
+        "description": "Sahara is a donation drive helping underprivileged children—especially those affected by rat-hole mining—access education, safety, and essential support.",
+        "areaServed": "IN",
+        "sameAs": [
+          "https://www.facebook.com/xplorica.fiem",
+          "https://www.instagram.com/xplorica.fiem",
+        ],
+        "potentialAction": {
+          "@type": "DonateAction",
+          "target": "https://sahara.xplorica.in/#donate",
+          "recipient": {
+            "@type": "Organization",
+            "name": "Sahara"
+          }
+        }
+      }
+    </script>
   </head>
   <body class="antialiased text-slate-800 bg-white">
     <div id="root"></div>
+    <!-- Noscript fallback CTA to help SEO/accessibility -->
+    <noscript>
+      Sahara needs JavaScript to run. You can still donate at
+      <a href="#donate">/donate</a>.
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

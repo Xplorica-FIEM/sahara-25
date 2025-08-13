@@ -1,0 +1,5 @@
+# Block all pages and resources, but allow only the homepage
+User-agent: *
+Disallow: /
+
+Allow: /$
