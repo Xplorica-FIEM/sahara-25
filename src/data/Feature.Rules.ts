@@ -1,7 +1,7 @@
 const FeatureRule = {
     eventName: "",
     ShowDonors: true,
-    paymentButton:true
+    paymentButton: false
 }
 
 export default FeatureRule;
