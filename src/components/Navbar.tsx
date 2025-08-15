@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
                     <img
                         src="/images/xplorica-logo.png"
                         alt="XPLORICA"
-                        className="w-10 h-10 mix-blend-multiply"
+                        className="w-10 h-10 mix-blend-multiply transition-transform duration-1500 ease-in-out hover:rotate-[180deg]"
                     />
                 </a>
 
@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
                         <img
                             src="/images/xplorica-logo.png"
                             alt="XPLORICA"
-                            className="w-10 h-10 mix-blend-multiply"
+                            className="w-10 h-10 mix-blend-multiply transition-transform duration-1000 ease-in-out hover:rotate-[360deg]"
                         />
                     </a>
                 </div>
