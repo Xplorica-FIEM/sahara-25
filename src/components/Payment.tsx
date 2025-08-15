@@ -18,12 +18,17 @@ const Payment = () => {
                 and technical skills through hands-on learning, empowering the
                 next generation of makers.
             </p> */}
+            <div className="p-5">
+                {FeatureRule?.paymentButton ? (
+                    <PaymentButton />
+                ) : (
+                    <PaymentForm />
+                )}
+            </div>
 
-      {FeatureRule?.paymentButton ? <PaymentButton /> : <PaymentForm />}
-
-      {FeatureRule?.ShowDonors && <DonorCarousel />}
-    </div>
-  );
+            {FeatureRule?.ShowDonors && <DonorCarousel />}
+        </div>
+    );
 };
 
 export default Payment;

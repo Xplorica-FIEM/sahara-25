@@ -8,7 +8,7 @@ const Hero = () => {
             />
 
             <div className="absolute top-1/3 left-8 md:left-16 lg:left-36 text-white max-w-xl text-shadow-lg/30">
-                <p className="mt-4 text-lg md:text-xl text-white/90 font-black">
+                <p className="mt-4 text-xl text-white/90 font-extrabold">
                     सhara
                 </p>
                 <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
@@ -16,11 +16,11 @@ const Hero = () => {
                     <br />
                     But you can choose to{" "}
                     <span className="text-teal-400">
-                        change <span className="italic">it.</span>
+                        <span className="italic">change </span>it.
                     </span>
                 </h1>
                 <p className="mt-4 text-lg md:text-xl text-white">
-                    join us in our mission to support those in need.
+                    join us in our mission to support those in need
                 </p>
                 <a
                     href="#donate"
