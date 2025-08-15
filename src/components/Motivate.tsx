@@ -2,14 +2,14 @@ import PrevYear from "./PrevYears";
 
 const Motivate = () => {
     const images = [
-        { src: "/images/gallery/1.webp", alt: "Gallery 1" },
-        { src: "/images/gallery/2.webp", alt: "Gallery 2" },
-        { src: "/images/gallery/3.webp", alt: "Gallery 3" },
-        { src: "/images/gallery/4.webp", alt: "Gallery 4" },
-        { src: "/images/gallery/5.webp", alt: "Gallery 5" },
-        { src: "/images/gallery/6.webp", alt: "Gallery 6" },
-        { src: "/images/gallery/7.webp", alt: "Gallery 7" },
-        { src: "/images/gallery/8.webp", alt: "Gallery 8" },
+        { src: "/images/gallery/img1.webp", alt: "Gallery 1" },
+        { src: "/images/gallery/img2.webp", alt: "Gallery 2" },
+        { src: "/images/gallery/img3.webp", alt: "Gallery 3" },
+        { src: "/images/gallery/img4.webp", alt: "Gallery 4" },
+        { src: "/images/gallery/img5.webp", alt: "Gallery 5" },
+        { src: "/images/gallery/img6.webp", alt: "Gallery 6" },
+        { src: "/images/gallery/img7.webp", alt: "Gallery 7" },
+        { src: "/images/gallery/img8.webp", alt: "Gallery 8" },
     ];
 
     return (
@@ -21,7 +21,7 @@ const Motivate = () => {
 
             <div className="relative flex justify-center md:w-1/2 -mt-4">
                 <img
-                    src="/images/trasparency/2024.jpg"
+                    src="/images/trasparency/sahara_expenses_2024.webp"
                     alt="Final"
                     className="max-w-full rounded-xl shadow-lg object-cover"
                 />
