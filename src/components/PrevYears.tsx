@@ -77,13 +77,13 @@ export default function PrevYear() {
         {/* Controls */}
         <button
           onClick={prevSlide}
-          className="md:ml-3 absolute top-1/2 left-0 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md"
+          className="ml-3 absolute top-1/2 left-0 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md"
         >
           <ChevronLeft className="w-5 h-5 text-teal-700" />
         </button>
         <button
           onClick={nextSlide}
-          className="md:mr-3 absolute top-1/2 right-0 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md"
+          className="mr-3 absolute top-1/2 right-0 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md"
         >
           <ChevronRight className="w-5 h-5 text-teal-700" />
         </button>

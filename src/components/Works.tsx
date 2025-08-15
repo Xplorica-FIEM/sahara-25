@@ -35,8 +35,8 @@ const Works: React.FC = () => {
                 <h3 className="text-xl md:text-2xl font-semibold text-teal-900">
                     why?
                 </h3>
-                <h1 className="text-3xl md:text-4xl font-bold leading-tight drop-shadow-lg">
-                    See What Choosing Change Looks Like.
+                <h1 className="text-3xl md:text-4xl font-bold leading-tight ">
+                    See What Choosing <span className="text-teal-500">Change</span> Looks Like.
                 </h1>
             </div>
 

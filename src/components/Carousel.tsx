@@ -7,13 +7,10 @@ export default function DonorCardCarousel() {
     const donors = [
         { name: "Saptarshi Chakraborty", amount: 150, time: "2h ago", pfp: "https://picsum.photos/200" },
         { name: "Sagnik Chakraborty", amount: 300, time: "1d ago", pfp: "https://picsum.photos/200" },
-        { name: "Hakla Sharukh", amount: 75, time: "3h ago", pfp: "https://picsum.photos/200" },
         { name: "Raunak Manna", amount: 200, time: "4d ago", pfp: "https://picsum.photos/200" },
         { name: "Shamba Saha", amount: 90, time: "5h ago", pfp: "https://picsum.photos/200" },
         { name: "Saikat Tanti", amount: 500, time: "6d ago", pfp: "https://picsum.photos/200" },
         { name: "Swagnik G", amount: 120, time: "30m ago", pfp: "https://picsum.photos/200" },
-        { name: "Bill Gates", amount: 100000, time: "1y ago", pfp: "https://picsum.photos/200" },
-        { name: "Johnny Sins", amount: 69, time: "Nice", pfp: "https://picsum.photos/200" },
     ];
 
     const donorList = [...donors, ...donors];
