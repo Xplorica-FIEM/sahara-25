@@ -31,7 +31,7 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
                             (donor, index) => (
                                 <div
                                     key={`${loopIndex}-${index}`}
-                                    className="bg-white shadow-md rounded-lg px-4 py-2 mx-2 flex border border-teal-500 flex-col justify-center items-start min-w-[200px]"
+                                    className="bg-white shadow-md rounded-lg px-4 py-2 mx-2 flex border border-teal-500 flex-col justify-between items-start min-w-[200px]"
                                 >
                                     <div className="flex flex-col items-start mb-2">
                                         <span className="text-sm text-gray-500">
