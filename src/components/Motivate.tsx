@@ -76,7 +76,7 @@ const Motivate = () => {
                         <img
                             src={image.src}
                             alt={image.alt}
-                            className={`w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110 transition-opacity duration-500 ${
+                            className={`w-full h-full object-cover transition-all  ease-in-out hover:scale-110 duration-500 ${
                                 loaded[index] ? "opacity-100" : "opacity-0"
                             }`}
                             onLoad={() =>

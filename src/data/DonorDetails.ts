@@ -1,44 +1,44 @@
 const DONOR_LIST = [
-  {
-    name: "Debarati Bhanja",
-    amount: 50,
-    timestamp: "Fri Aug 15, 08:04pm",
-  },
-  {
-    name: "Brishtidhara Dutta",
-    amount: 40,
-    timestamp: "Fri Aug 15, 07:49pm",
-  },
-  {
-    name:"Debarpan",
-    amount:15,
-    timestamp:"Fri Aug 15, 07:46pm"
-  },
-  {
-    name:"Hridesh",
-    amount:10,
-    timestamp:"Fri Aug 15, 07:37pm"
-  },
-  {
-    name:"Somya Shefalika",
-    amount:10,
-    timestamp:"Fri Aug 15, 07:29pm"
-  },
-  {
-    name:"SAYANDEEP PAUL",
-    amount:50,
-    timestamp:"Fri Aug 15, 07:05pm"
-  },
-  {
-    name:"Bibekananda Sarkar",
-    amount:40,
-    timestamp:"Fri Aug 15, 06:53pm"
-  },
-  {
-    name:"",
-    amount:0,
-    timestamp:""
-  },
+    {
+        name: "Debarati Bhanja",
+        amount: 50,
+        timestamp: "2025-08-15T20:04:00",
+    },
+    {
+        name: "Brishtidhara Dutta",
+        amount: 40,
+        timestamp: "2025-08-15T19:49:00",
+    },
+    {
+        name: "Debarpan",
+        amount: 15,
+        timestamp: "2025-08-15T19:46:00",
+    },
+    {
+        name: "Hridesh",
+        amount: 10,
+        timestamp: "2025-08-15T19:37:00",
+    },
+    {
+        name: "Somya Shefalika",
+        amount: 10,
+        timestamp: "2025-08-15T19:29:00",
+    },
+    {
+        name: "SAYANDEEP PAUL",
+        amount: 50,
+        timestamp: "2025-08-15T19:05:00",
+    },
+    {
+        name: "Bibekananda Sarkar",
+        amount: 40,
+        timestamp: "2025-08-15T18:53:00",
+    },
+    {
+        name: "",
+        amount: 0,
+        timestamp: "",
+    },
 ];
 
 export default DONOR_LIST;
