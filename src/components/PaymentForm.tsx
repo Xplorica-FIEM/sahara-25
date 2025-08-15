@@ -288,7 +288,7 @@ export default function PaymentForm() {
                   <span className="font-semibold">
                     ₹{selectedAmount.toLocaleString("en-IN")}
                   </span>
-                </div>
+                </div>d
                 <button
                   type="button"
                   onClick={() => {

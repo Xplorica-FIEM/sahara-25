@@ -1,4 +1,12 @@
+import { useState } from "react";
 import PrevYear from "./PrevYears";
+
+const Skeleton = ({ className }: { className?: string }) => (
+    <div
+        className={`animate-pulse bg-slate-700 ${className || ""}`}
+        style={{ backgroundSize: "200% 200%" }}
+    ></div>
+);
 
 const Motivate = () => {
     const images = [
@@ -12,6 +20,11 @@ const Motivate = () => {
         { src: "/images/gallery/img8.webp", alt: "Gallery 8" },
     ];
 
+    // Keep track of loaded images
+    const [loaded, setLoaded] = useState<{ [key: number]: boolean }>({});
+    const [mainLoaded, setMainLoaded] = useState(false);
+    const [finalLoaded, setFinalLoaded] = useState(false);
+
     return (
         <div
             className="min-h-screen flex flex-col items-center bg-slate-900 text-white p-5 pt-24 pb-10"
@@ -19,18 +32,25 @@ const Motivate = () => {
         >
             <PrevYear />
 
+            {/* Transparency image */}
             <div className="relative flex justify-center md:w-1/2 -mt-4">
+                {!mainLoaded && (
+                    <Skeleton className="w-full h-auto rounded-xl shadow-lg aspect-[4/3]" />
+                )}
                 <img
                     src="/images/trasparency/sahara_expenses_2024.webp"
                     alt="Final"
-                    className="max-w-full rounded-xl shadow-lg object-cover"
+                    className={`max-w-full rounded-xl shadow-lg object-cover transition-opacity duration-500 ${
+                        mainLoaded ? "opacity-100" : "opacity-0"
+                    }`}
+                    onLoad={() => setMainLoaded(true)}
                 />
                 <div className="absolute md:bottom-4 bottom-2 md:left-4 left-2 text-white md:text-md text-xs font-semibold bg-black/50 px-3 py-1 rounded-md">
                     Sahara 2024 Donation Transparency
                 </div>
             </div>
 
-
+            {/* Heading */}
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 mt-16">
                 Know that your donation is making a{" "}
                 <span className="text-teal-400">difference</span>
@@ -43,27 +63,46 @@ const Motivate = () => {
                 used.
             </p>
 
+            {/* Gallery grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 max-w-6xl w-full px-4 mx-auto">
                 {images.map((image, index) => (
                     <div
                         key={index}
-                        className="w-full h-60 overflow-hidden rounded-xl shadow-lg"
+                        className="w-full h-60 overflow-hidden rounded-xl shadow-lg relative"
                     >
+                        {!loaded[index] && (
+                            <Skeleton className="w-full h-full" />
+                        )}
                         <img
                             src={image.src}
                             alt={image.alt}
-                            className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                            className={`w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110 transition-opacity duration-500 ${
+                                loaded[index] ? "opacity-100" : "opacity-0"
+                            }`}
+                            onLoad={() =>
+                                setLoaded((prev) => ({
+                                    ...prev,
+                                    [index]: true,
+                                }))
+                            }
                         />
                     </div>
                 ))}
             </div>
 
+            {/* Final image */}
             <div className="w-full mt-2 px-4 mx-auto max-w-6xl">
                 <div className="relative w-full">
+                    {!finalLoaded && (
+                        <Skeleton className="w-full h-auto rounded-xl shadow-lg aspect-[16/9]" />
+                    )}
                     <img
                         src="/images/final_medium.webp"
                         alt="Final"
-                        className="w-full rounded-xl shadow-lg object-cover"
+                        className={`w-full rounded-xl shadow-lg object-cover transition-opacity duration-500 ${
+                            finalLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                        onLoad={() => setFinalLoaded(true)}
                     />
                     <div className="absolute bottom-4 left-4 text-white text-xl font-semibold bg-black/50 px-3 py-1 rounded-md">
                         Sahara 2024

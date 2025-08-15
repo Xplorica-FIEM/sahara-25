@@ -34,17 +34,17 @@ const Navbar: React.FC = () => {
 
                 <a
                     href="https://xplorica.in"
-                    className="text-gray-800 font-semibold transition hover:bg-teal-200/50 duration-150 rounded-md p-2 text-right flex items-center gap-2 -mr-15 md:mr-2"
+                    className="group text-gray-800 font-semibold hover:bg-teal-200/50 duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)] rounded-md p-2 text-right flex items-center gap-2 -mr-15 md:mr-2"
                     onClick={() => setIsOpen(false)}
                 >
-                    <h1 className="md:text-base/5 text-black/60 text-sm/5">
+                    <h1 className="md:text-base/5 text-black/60 text-sm/5 group-hover:text-black transition-colors duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)]">
                         an initiative <br />
                         from
                     </h1>
                     <img
                         src="/images/xplorica-logo.png"
                         alt="XPLORICA"
-                        className="w-10 h-10 mix-blend-multiply transition-transform duration-1500 ease-in-out hover:rotate-[180deg]"
+                        className="w-10 h-10 mix-blend-multiply transition-transform duration-[1200ms] ease-[cubic-bezier(.68,-0.55,.27,1.55)] group-hover:rotate-[360deg]"
                     />
                 </a>
 

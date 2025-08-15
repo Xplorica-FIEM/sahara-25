@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 type WorkItem = {
     title: string;
     description: string;
@@ -24,8 +26,15 @@ const workItems: WorkItem[] = [
     },
 ];
 
+const Skeleton = () => (
+    <div className="absolute inset-0 animate-pulse bg-slate-300" />
+);
 
 const Works: React.FC = () => {
+    const [loaded, setLoaded] = useState<boolean[]>(
+        Array(workItems.length).fill(false)
+    );
+
     return (
         <div
             className="min-h-screen w-full flex flex-col items-center bg-teal-50 p-5 pt-24"
@@ -35,8 +44,9 @@ const Works: React.FC = () => {
                 <h3 className="text-xl md:text-2xl font-semibold text-teal-900">
                     why?
                 </h3>
-                <h1 className="text-3xl md:text-4xl font-bold leading-tight ">
-                    See What Choosing <span className="text-teal-500">Change</span> Looks Like.
+                <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+                    See What Choosing{" "}
+                    <span className="text-teal-500">Change</span> Looks Like.
                 </h1>
             </div>
 
@@ -44,15 +54,34 @@ const Works: React.FC = () => {
                 {workItems.map((item, index) => (
                     <div
                         key={index}
-                        className={`relative flex-1 rounded-xl overflow-hidden shadow-md border border-teal-700 group transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${index === 2 ? "hidden md:block" : ""
-                            }`}
+                        className="relative flex-1 rounded-xl overflow-hidden shadow-md border border-teal-700 group transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-[200px] md:min-h-[400px]"
                     >
+                        {/* Skeleton while loading */}
+                        {!loaded[index] && <Skeleton />}
+
+                        {/* Hidden img tag just to trigger onLoad */}
+                        <img
+                            src={item.image}
+                            alt={item.title}
+                            className="hidden"
+                            onLoad={() =>
+                                setLoaded((prev) => {
+                                    const updated = [...prev];
+                                    updated[index] = true;
+                                    return updated;
+                                })
+                            }
+                        />
+
+                        {/* Background image with fade-in */}
                         <div
-                            className="absolute inset-0 bg-cover bg-center transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105 group-hover:brightness-120"
+                            className={`absolute inset-0 bg-cover bg-center transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105 group-hover:brightness-120 ${
+                                loaded[index] ? "opacity-100" : "opacity-0"
+                            }`}
                             style={{ backgroundImage: `url(${item.image})` }}
                         />
                         <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
-                        <div className="relative z-20 flex flex-col justify-center items-center text-center h-full min-h-[200px] md:min-h-[400px] text-white px-4 py-6">
+                        <div className="relative z-20 flex flex-col justify-center items-center text-center h-full text-white px-4 py-6">
                             <h2 className="text-xl md:text-2xl font-bold mb-2 text-teal-400">
                                 {item.title}
                             </h2>

@@ -9,7 +9,7 @@ const Hero = () => {
 
             <div className="absolute top-1/3 left-8 md:left-16 lg:left-36 text-white max-w-xl text-shadow-lg/30">
                 <p className="mt-4 text-xl text-white/90 font-extrabold">
-                    सhara
+                    <span className="text-teal-300">#Udaan</span>सhara
                 </p>
                 <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
                     They didn&apos;t choose this life.
