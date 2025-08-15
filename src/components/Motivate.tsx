@@ -61,7 +61,7 @@ const Motivate = () => {
             <div className="w-full mt-2 px-4 mx-auto max-w-6xl">
                 <div className="relative w-full">
                     <img
-                        src="/images/final.webp"
+                        src="/images/final_medium.webp"
                         alt="Final"
                         className="w-full rounded-xl shadow-lg object-cover"
                     />
