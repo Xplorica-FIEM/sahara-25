@@ -75,7 +75,7 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
   direction = "left",
 }) => {
   const [rows, setRows] = React.useState<ApiDonation[] | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
+  const [_error, setError] = React.useState<string | null>(null);
 
   // load once with cache; StrictMode double-mount safe due to inflight promise
   React.useEffect(() => {
