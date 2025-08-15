@@ -22,6 +22,24 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
         }))
         .sort((a, b) => b.amount - a.amount); // highest donations first
 
+    const tierColors = [
+        {
+            bgClass: "bg-[#FFD700]/20",
+            label: "Gold Contributor",
+            crown: "gold",
+        },
+        {
+            bgClass: "bg-[#C0C0C0]/20",
+            label: "Silver Contributor",
+            crown: "silver",
+        },
+        {
+            bgClass: "bg-[#CD7F32]/20",
+            label: "Bronze Contributor",
+            crown: "#CD7F32",
+        },
+    ];
+
     return (
         <div className="relative w-full overflow-hidden">
             <div className="w-full text-center font-bold text-xl my-2">
@@ -31,30 +49,11 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
             {/* Top 3 Contributors */}
             <div className="flex w-full flex-col md:flex-row p-2 gap-2">
                 {donors.slice(0, 3).map((donor, index) => {
-                    const tierColors = [
-                        {
-                            bg: "#FFD700",
-                            label: "Gold Contributor",
-                            crown: "gold",
-                        },
-                        {
-                            bg: "#C0C0C0",
-                            label: "Silver Contributor",
-                            crown: "silver",
-                        },
-                        {
-                            bg: "#CD7F32",
-                            label: "Bronze Contributor",
-                            crown: "#CD7F32",
-                        },
-                    ];
-
                     const tier = tierColors[index] || tierColors[2];
-
                     return (
                         <div
                             key={index}
-                            className={`bg-[${tier.bg}]/20 shadow-md rounded-lg px-4 py-2 flex border border-teal-500 flex-col justify-between items-start min-w-[200px] w-full`}
+                            className={`${tier.bgClass} shadow-md rounded-lg px-4 py-2 flex border border-teal-500 flex-col justify-between items-start min-w-[200px] w-full`}
                         >
                             <div className="flex items-center gap-2 justify-between w-full">
                                 <span className="text-teal-600 text-xs flex items-center gap-1">
@@ -112,7 +111,9 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
                                 <div className="flex flex-col items-start mb-2">
                                     <span className="text-sm text-gray-500">
                                         <ReactTimeAgo
-                                            date={new Date(donor.timestamp ?? "")}
+                                            date={
+                                                new Date(donor.timestamp ?? "")
+                                            }
                                             locale="en-US"
                                         />
                                     </span>
