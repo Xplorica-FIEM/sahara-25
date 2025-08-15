@@ -6,7 +6,7 @@ import PaymentButton from "./PaymentButton";
 const Payment = () => {
   return (
     <div
-      className="min-h-screen flex flex-col items-center bg-gray-50 p-5 pt-20"
+      className="flex flex-col items-center bg-gray-50 p-5 pt-20"
       id="donate"
     >
       <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 mt-10 text-gray-700">
