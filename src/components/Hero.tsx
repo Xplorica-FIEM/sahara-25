@@ -24,7 +24,7 @@ const Hero = () => {
                     </span>
                 </h1>
                 <p className="mt-4 text-lg md:text-xl text-white">
-                    join us in our mission to support those in need
+                    Join us in our mission to support those in need
                 </p>
                 <a
                     href="#donate"

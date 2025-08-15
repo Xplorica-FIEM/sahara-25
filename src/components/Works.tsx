@@ -40,6 +40,11 @@ const Works: React.FC = () => {
             className="min-h-screen w-full flex flex-col items-center bg-teal-50 p-5 pt-24"
             id="mission"
         >
+            <div className=" text-black/70 text-center md:hidden bg-teal-500/30 p-2 -mx-10 px-10 mb-4 rounded-lg ">
+                Children of fallen illegal coal miners grow up in the shadows —
+                with empty plates, lost dreams, and no safety net.
+            </div>
+
             <div className="text-center mb-12">
                 <h3 className="text-xl md:text-2xl font-semibold text-teal-900">
                     why?

@@ -55,12 +55,10 @@ const Motivate = () => {
                 Know that your donation is making a{" "}
                 <span className="text-teal-400">difference</span>
             </h1>
-            <p className="text-base md:text-lg text-teal-700 text-center md:w-2/3 mb-10">
-                Sahara uses 100% of your donation to teach, empower, and inspire
-                the next generation of makers, from the bottom of the social
-                ladder. We provide names and photos of all of our funding
-                recipients, with a detailed estimate of how funds are being
-                used.
+            <p className="text-base md:text-lg text-teal-600 text-center md:w-2/3 mb-10">
+                Sahara directs 100% of donations to teaching, empowering, and
+                inspiring the next generation of makers. We share recipient
+                names, photos, and detailed fund usage.
             </p>
 
             {/* Gallery grid */}
