@@ -1,5 +1,3 @@
-const now = Date.now();
-
 const DONOR_LIST = [
   {
     name: "Debarati Bhanja",
