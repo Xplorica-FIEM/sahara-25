@@ -5,7 +5,7 @@ export default function SecurePaymentFooter() {
     <div className="flex items-center justify-center gap-1 text-[10px] text-gray-600 pt-2 text-center">
       <Lock className="h-full" />
       <span>
-        Secure Payment · This site is protected by reCAPTCHA and the Google
+        Secure Payment · This site is protected by Cloudflare CAPTCHA
         <a href="#" className="underline hover:text-gray-800">
           {" "}
           Privacy Policy

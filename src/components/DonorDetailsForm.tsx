@@ -81,7 +81,7 @@ export default function DonorDetailsForm({
         </p>
       </div>
 
-      <div className="pt-2">
+      <div className="pt-2 flex justify-center">
         {turnstileSiteKey ? (
           <Turnstile
             theme="light"
