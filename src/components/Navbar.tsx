@@ -5,13 +5,15 @@ const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl bg-teal-100 shadow-lg rounded-xl md:px-6 md:py-2 px-3 py-1 flex items-center justify-between border-teal-700 border">
+        <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-7xl bg-teal-100 shadow-lg rounded-xl md:px-6 md:py-2 px-3 py-1 border-teal-700 border">
             <div className="flex items-center justify-between w-full">
+                {/* Left Logo */}
                 <a href="/" className="text-gray-800 font-bold text-2xl ml-3">
                     सh<span className="italic text-teal-700 -ml-1">a</span>ra
                 </a>
 
-                <div className="hidden md:flex items-center space-x-4">
+                {/* Middle Navigation - CENTERED */}
+                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center space-x-4">
                     <a
                         href="#mission"
                         className="text-gray-800 font-medium transition hover:bg-teal-200/50 duration-150 rounded-md p-1"
@@ -32,12 +34,12 @@ const Navbar: React.FC = () => {
                     </a>
                 </div>
 
+                {/* Right Logo */}
                 <a
                     href="https://xplorica.in"
-                    className="group text-gray-800 font-semibold hover:bg-teal-200/50 duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)] rounded-md p-2 text-right flex items-center gap-2 -mr-15 md:mr-2"
-                    onClick={() => setIsOpen(false)}
+                    className="group text-gray-800 font-semibold hover:bg-teal-200/50 duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)] rounded-md p-2 flex items-center gap-2 md:mr-2"
                 >
-                    <h1 className="md:text-base/5 text-black/60 text-sm/5 group-hover:text-black transition-colors duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)]">
+                    <h1 className="md:text-base/5 text-black/60 text-sm/5 group-hover:text-black transition-colors text-right duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)]">
                         an initiative <br />
                         from
                     </h1>
