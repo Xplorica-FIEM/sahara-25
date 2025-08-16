@@ -1,0 +1,280 @@
+import React, { useEffect, useState } from "react";
+
+interface ApiDonation {
+  order_id: string;
+  payment_id: string | null;
+  status: string;
+  amount_paise: number;
+  amount_rupees: string | number;
+  currency: string;
+  method: string | null;
+  email: string | null;
+  contact: string | null;
+  captured: boolean | null;
+  order_created_at: string;
+  payment_created_at: string | null;
+  donor?: {
+    name: string;
+    email: string | null;
+    phone: string | null;
+  };
+  receipt: string | null;
+}
+
+const PaymentsDashboard: React.FC = () => {
+  const [payments, setPayments] = useState<ApiDonation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "captured" | "failed" | "created">("all");
+  const [amountSort, setAmountSort] = useState<"default" | "low-to-high" | "high-to-low">("default");
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const backendUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const res = await fetch(`${backendUrl}/all-payments-database`, {
+          method: "GET",
+          headers: { 
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          credentials: "same-origin",
+        });
+        
+        if (!res.ok) {
+          throw new Error(`Backend API error: ${res.status} ${res.statusText}`);
+        }
+        
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setPayments(json.data);
+        } else {
+          throw new Error("Invalid API response format");
+        }
+      } catch (err: any) {
+        console.error("❌ Failed to fetch payments from backend:", err.message);
+        setError(`Unable to connect to backend API: ${err.message}`);
+        setPayments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPayments();
+  }, []);
+
+  const getStatusBadge = (status: string) => {
+    const statusStyles = {
+      captured: "bg-green-100 text-green-800",
+      created: "bg-yellow-100 text-yellow-800",
+      failed: "bg-red-100 text-red-800",
+      refunded: "bg-gray-100 text-gray-800"
+    };
+    return statusStyles[status as keyof typeof statusStyles] || "bg-gray-100 text-gray-800";
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleString();
+  };
+
+  // Remove duplicates first, then calculate statistics
+  const uniquePayments = payments.filter((payment, index, self) => 
+    index === self.findIndex(p => p.order_id === payment.order_id)
+  );
+
+  const successfulPayments = uniquePayments.filter(p => p.status === "captured");
+  const pendingPayments = uniquePayments.filter(p => p.status === "created");
+  const failedPayments = uniquePayments.filter(p => p.status === "failed");
+
+  const totalCapturedPaise = successfulPayments.reduce((sum, p) => sum + (p.amount_paise || 0), 0);
+
+  const refreshData = () => {
+    setLoading(true);
+    setError(null);
+    window.location.reload();
+  };
+
+  // Apply filters and sorting to unique payments
+  const filteredAndSortedPayments = uniquePayments
+    .filter(payment => {
+      if (statusFilter === "all") return true;
+      
+      // Normalize status value
+      const paymentStatus = (payment.status || "").toString().toLowerCase().trim();
+      
+      // Map filter values to actual status values
+      let expectedStatus = "";
+      if (statusFilter === "captured") {
+        expectedStatus = "captured";
+      } else if (statusFilter === "failed") {
+        expectedStatus = "failed";
+      } else if (statusFilter === "created") {
+        expectedStatus = "created";
+      } else {
+        expectedStatus = String(statusFilter).toLowerCase().trim();
+      }
+      
+      return paymentStatus === expectedStatus;
+    })
+    .sort((a, b) => {
+      if (amountSort === "default") return 0;
+      const amountA = a.amount_paise || 0;
+      const amountB = b.amount_paise || 0;
+      
+      if (amountSort === "low-to-high") {
+        return amountA - amountB;
+      } else if (amountSort === "high-to-low") {
+        return amountB - amountA;
+      }
+      return 0;
+    });
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold text-gray-900">Razorpay Payments Dashboard</h1>
+          <div className="flex gap-4">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+              className="px-3 py-2 border rounded-lg"
+            >
+              <option value="all">All Status</option>
+              <option value="captured">Successful</option>
+              <option value="failed">Failed</option>
+              <option value="created">Pending</option>
+            </select>
+            <select
+              value={amountSort}
+              onChange={(e) => setAmountSort(e.target.value as any)}
+              className="px-3 py-2 border rounded-lg"
+            >
+              <option value="default">Default Order</option>
+              <option value="low-to-high">Amount: Low to High</option>
+              <option value="high-to-low">Amount: High to Low</option>
+            </select>
+            <button
+              onClick={refreshData}
+              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? "Loading..." : "Refresh"}
+            </button>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-blue-900">Total Transactions</h3>
+            <p className="text-2xl font-bold text-blue-600">{uniquePayments.length}</p>
+          </div>
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-green-900">Successful</h3>
+            <p className="text-2xl font-bold text-green-600">{successfulPayments.length}</p>
+          </div>
+          <div className="bg-yellow-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-yellow-900">Pending</h3>
+            <p className="text-2xl font-bold text-yellow-600">{pendingPayments.length}</p>
+          </div>
+          <div className="bg-red-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-red-900">Failed</h3>
+            <p className="text-2xl font-bold text-red-600">{failedPayments.length}</p>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-purple-900">Total Successful Amount</h3>
+            <p className="text-2xl font-bold text-purple-600">₹{(totalCapturedPaise / 100).toFixed(2)}</p>
+          </div>
+        </div>
+      </div>
+
+      {!loading && !error && uniquePayments.length === 0 && (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+          <div className="text-gray-600">No payment data found</div>
+        </div>
+      )}
+
+      {!loading && !error && uniquePayments.length > 0 && filteredAndSortedPayments.length === 0 && (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+          <div className="text-gray-600">No payments match your current filters</div>
+          <button
+            onClick={() => {
+              setStatusFilter("all");
+              setAmountSort("default");
+            }}
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Clear Filters
+          </button>
+        </div>
+      )}
+      
+      {!loading && !error && filteredAndSortedPayments.length > 0 && (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">Payment Transactions</h3>
+              <span className="text-sm text-gray-500">
+                Showing {filteredAndSortedPayments.length} of {uniquePayments.length} payments
+              </span>
+            </div>
+          </div>
+          <table className="w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donor</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Email</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredAndSortedPayments.map((payment, index) => (
+                <tr key={`${payment.order_id}-${payment.payment_id || index}`} className="hover:bg-gray-50">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                    {payment.order_id}
+                  </td>
+                  <td className="px-3 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(payment.status)}`}>
+                      {payment.status}
+                    </span>
+                  </td>
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                    ₹{payment.amount_rupees}
+                  </td>
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {payment.method || "N/A"}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {payment.donor?.name || "Anonymous"}
+                  </td>
+                  <td className="px-2 py-4 w-48">
+                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                      <div className="text-sm text-gray-500 whitespace-nowrap min-w-0">
+                        {payment.email || "N/A"}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {payment.contact || "N/A"}
+                  </td>
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatDate(payment.payment_created_at || payment.order_created_at)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PaymentsDashboard;
