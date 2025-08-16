@@ -3,8 +3,8 @@ import ReactTimeAgo from "react-time-ago";
 import { Crown } from "lucide-react";
 
 interface InfiniteScrollDonorsProps {
-  speed?: number; // seconds per loop
-  direction?: "left" | "right";
+    speed?: number; // seconds per loop
+    direction?: "left" | "right";
 }
 
 // ---- API types & in-memory cache (module scoped) ----
@@ -34,13 +34,13 @@ type ApiDonation = {
 };
 
 type TopPaymentsResponse = {
-  success: boolean;
-  count: number;
-  data: ApiDonation[];
+    success: boolean;
+    count: number;
+    data: ApiDonation[];
 };
 
 const backendBaseUrl =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 const API_ENDPOINT = `${backendBaseUrl}/top-payments`; // same-origin or dev proxy
 const RECENT_API_ENDPOINT = `${backendBaseUrl}/recent-payments`;
 const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes
@@ -49,30 +49,30 @@ let topPaymentsCache: { data: ApiDonation[]; expiresAt: number } | null = null;
 let topPaymentsInflight: Promise<ApiDonation[]> | null = null;
 
 async function fetchTopPayments(): Promise<ApiDonation[]> {
-  const now = Date.now();
-  if (topPaymentsCache && topPaymentsCache.expiresAt > now) {
-    return topPaymentsCache.data;
-  }
-  if (topPaymentsInflight) return topPaymentsInflight;
+    const now = Date.now();
+    if (topPaymentsCache && topPaymentsCache.expiresAt > now) {
+        return topPaymentsCache.data;
+    }
+    if (topPaymentsInflight) return topPaymentsInflight;
 
-  topPaymentsInflight = fetch(API_ENDPOINT, {
-    method: "GET",
-    headers: { Accept: "application/json" },
-    credentials: "same-origin",
-  })
-    .then(async (res) => {
-      if (!res.ok)
-        throw new Error(`Failed to load top payments: ${res.status}`);
-      const json = (await res.json()) as TopPaymentsResponse;
-      const data = Array.isArray(json?.data) ? json.data : [];
-      topPaymentsCache = { data, expiresAt: now + CACHE_TTL_MS };
-      return data;
+    topPaymentsInflight = fetch(API_ENDPOINT, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        credentials: "same-origin",
     })
-    .finally(() => {
-      topPaymentsInflight = null;
-    });
+        .then(async (res) => {
+            if (!res.ok)
+                throw new Error(`Failed to load top payments: ${res.status}`);
+            const json = (await res.json()) as TopPaymentsResponse;
+            const data = Array.isArray(json?.data) ? json.data : [];
+            topPaymentsCache = { data, expiresAt: now + CACHE_TTL_MS };
+            return data;
+        })
+        .finally(() => {
+            topPaymentsInflight = null;
+        });
 
-  return topPaymentsInflight;
+    return topPaymentsInflight;
 }
 
 // Recent payments cache and fetcher
@@ -105,8 +105,8 @@ async function fetchRecentPayments(): Promise<ApiDonation[]> {
 }
 
 const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
-  speed = 20,
-  direction = "left",
+    speed = 20,
+    direction = "left",
 }) => {
   const [topRows, setTopRows] = React.useState<ApiDonation[] | null>(null);
   const [recentRows, setRecentRows] = React.useState<ApiDonation[] | null>(null);
