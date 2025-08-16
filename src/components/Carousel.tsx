@@ -10,23 +10,27 @@ interface InfiniteScrollDonorsProps {
 // ---- API types & in-memory cache (module scoped) ----
 type ApiDonation = {
   order_id: string;
-  payment_id: string | null;
-  status: string;
-  amount_paise: number;
+  donor_name: string;
   amount_rupees: string | number;
-  currency: string;
-  method: string | null;
-  email: string | null;
-  contact: string | null;
-  captured: boolean | null;
-  order_created_at: string | null;
-  payment_created_at: string | null;
-  donor: {
+  amount_paise: number;
+  created_at: string;
+  // The following fields from the original type are not used or available
+  // in the actual API response, but kept for backwards compatibility
+  payment_id?: string | null;
+  status?: string;
+  currency?: string;
+  method?: string | null;
+  email?: string | null;
+  contact?: string | null;
+  captured?: boolean | null;
+  order_created_at?: string | null;
+  payment_created_at?: string | null;
+  donor?: {
     name: string;
     email: string | null;
     phone: string | null;
   };
-  receipt: string | null;
+  receipt?: string | null;
 };
 
 type TopPaymentsResponse = {
@@ -134,19 +138,18 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
     };
   }, []);
 
-  // Extract only captured donations and sort by amount desc
+  // Extract donations and map to display format
   const topDonors = React.useMemo(() => {
     const source = topRows ?? [];
     return source
-      .filter((d) => d.status === "captured")
       .map((d) => ({
-        name: d.donor?.name ?? "Anonymous",
+        name: d.donor_name ?? d.donor?.name ?? "Anonymous",
         amount: Number(
           typeof d.amount_rupees === "string"
             ? parseFloat(d.amount_rupees)
             : d.amount_rupees
         ),
-        timestamp: d.payment_created_at ?? d.order_created_at ?? null,
+        timestamp: d.payment_created_at ?? d.created_at ?? d.order_created_at ?? null,
       }))
       .sort((a, b) => b.amount - a.amount);
   }, [topRows]);
@@ -154,15 +157,14 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
   const recentDonors = React.useMemo(() => {
     const source = recentRows ?? [];
     return source
-      .filter((d) => d.status === "captured")
       .map((d) => ({
-        name: d.donor?.name ?? "Anonymous",
+        name: d.donor_name ?? d.donor?.name ?? "Anonymous",
         amount: Number(
           typeof d.amount_rupees === "string"
             ? parseFloat(d.amount_rupees)
             : d.amount_rupees
         ),
-        timestamp: d.payment_created_at ?? d.order_created_at ?? null,
+        timestamp: d.payment_created_at ?? d.created_at ?? d.order_created_at ?? null,
       }));
   }, [recentRows]);
 
