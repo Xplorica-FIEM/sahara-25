@@ -6,17 +6,20 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto w-full">
                 <div className="flex flex-col md:flex-row flex-wrap justify-between">
                     <div className="basis-full md:basis-60 mb-8 md:mb-0">
-                        <div className="mb-1 -mt-7">
-                            <img 
-                                src="/sahara logo.png" 
-                                alt="Sahara Logo" 
-                                className="h-17 w-auto"
-                            />
+                        {/* Mobile: Logo and text side by side */}
+                        <div className="flex items-center gap-3 md:flex-col md:items-start md:gap-0">
+                            <div className="flex-shrink-0 md:mb-2 md:-mt-7">
+                                <img 
+                                    src="/sahara logo.png" 
+                                    alt="Sahara Logo" 
+                                    className="h-16 md:h-16 w-auto"
+                                />
+                            </div>
+                            <p className="text-sm leading-relaxed md:mt-1">
+                                Empowering kids through hands-on learning and 
+                                creativity. Your support builds futures.
+                            </p>
                         </div>
-                        <p className="text-sm leading-relaxed">
-                            Empowering kids through hands-on learning and <br />
-                            creativity. Your support builds futures.
-                        </p>
                     </div>
 
                     <div className="basis-full md:basis-40 mb-8 md:mb-0">
