@@ -15,10 +15,12 @@ export default function AmountSelector({
 }: AmountSelectorProps) {
   const donationOptions = useMemo(
     () => [
-      { amount: 10, label: "₹10" },
+      { amount: 30, label: "₹30" },
       { amount: 50, label: "₹50" },
       { amount: 100, label: "₹100" },
       { amount: 500, label: "₹500" },
+      { amount: 1000, label: "₹1000" },
+      { amount: 1500, label: "₹1500" },
     ],
     []
   );
