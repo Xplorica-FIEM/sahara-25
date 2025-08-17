@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff, Home, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface AccessControlProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ const DashboardAccessControl: React.FC<AccessControlProps> = ({ children }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const requiredAccessKey = import.meta.env.VITE_DASHBOARD_ACCESS_KEY;
 
@@ -45,6 +47,10 @@ const DashboardAccessControl: React.FC<AccessControlProps> = ({ children }) => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('dashboard_authenticated');
     setAccessKey('');
+  };
+
+  const handleBackToHome = () => {
+    navigate('/');
   };
 
   if (loading) {
@@ -122,16 +128,35 @@ const DashboardAccessControl: React.FC<AccessControlProps> = ({ children }) => {
 
   return (
     <div>
-      {/* Logout button in top-right corner */}
-      <div className="fixed top-4 right-4 z-50">
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition-colors"
-        >
-          Logout
-        </button>
+      {/* Dashboard Header with navigation */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Back to Home button */}
+            <button
+              onClick={handleBackToHome}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Back to Home
+            </button>
+
+            {/* Logout button */}
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </button>
+          </div>
+        </div>
       </div>
-      {children}
+
+      {/* Dashboard Content */}
+      <div className="pt-6">
+        {children}
+      </div>
     </div>
   );
 };

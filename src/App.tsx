@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Works from "./components/Works";
@@ -21,18 +21,19 @@ const HomePage = () => (
 );
 
 const App = () => {
+  const location = useLocation();
+  const isDashboardPage = location.pathname === '/dashboard';
+
   return (
     <>
       <div className="font-lexend">
-        <Navbar />
+        {!isDashboardPage && <Navbar />}
         
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={
             <DashboardAccessControl>
-              <div className="pt-24">
-                <PaymentsDashboard />
-              </div>
+              <PaymentsDashboard />
             </DashboardAccessControl>
           } />
         </Routes>

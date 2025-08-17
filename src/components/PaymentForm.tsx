@@ -146,14 +146,43 @@ export default function PaymentForm() {
         } catch {
           try {
             errMsg = await orderRes.text();
-          } catch {}
+          } catch {
+            // Silently handle parsing errors
+          }
         }
         throw new Error(errMsg);
       }
 
       const order = await orderRes.json();
 
-      const options: any = {
+      interface RazorpayOptions {
+        key: string;
+        amount: number;
+        currency: string;
+        name: string;
+        description: string;
+        order_id: string;
+        prefill: {
+          name?: string;
+          email?: string;
+          contact?: string;
+        };
+        handler: (response: RazorpayResponse) => Promise<void>;
+        modal: {
+          ondismiss: () => void;
+        };
+        theme: {
+          color: string;
+        };
+      }
+
+      interface RazorpayResponse {
+        razorpay_payment_id: string;
+        razorpay_order_id: string;
+        razorpay_signature: string;
+      }
+
+      const options: RazorpayOptions = {
         key: razorpayKeyId,
         amount: order.amount, // in subunits from backend
         currency: order.currency,
@@ -165,7 +194,7 @@ export default function PaymentForm() {
           email: donorEmail || undefined,
           contact: mobileDigits,
         },
-        handler: async function (response: any) {
+        handler: async function (response: RazorpayResponse) {
           try {
             // 3) Verify on backend (server-side check for 'captured' status)
             const verifyRes = await fetch(`${backendBaseUrl}/verify-payment`, {
@@ -232,10 +261,26 @@ export default function PaymentForm() {
         theme: { color: "#14b8a6" },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      interface RazorpayInstance {
+        open: () => void;
+        on: (event: string, callback: (response: PaymentFailureResponse) => void) => void;
+      }
+
+      interface PaymentFailureResponse {
+        error?: {
+          code?: string;
+          description?: string;
+          metadata?: {
+            payment_id?: string;
+            order_id?: string;
+          };
+        };
+      }
+
+      const rzp = new (window as typeof window & { Razorpay: new (options: RazorpayOptions) => RazorpayInstance }).Razorpay(options);
 
       // New: listen for payment failure emitted by Razorpay
-      rzp.on("payment.failed", (resp: any) => {
+      rzp.on("payment.failed", (resp: PaymentFailureResponse) => {
         const err = resp?.error || {};
         setErrorInfo({
           title: "Payment failed",
@@ -249,10 +294,11 @@ export default function PaymentForm() {
       });
 
       rzp.open();
-    } catch (e: any) {
-      console.error(e);
+    } catch (e: unknown) {
+      const error = e as Error;
+      console.error(error);
       // Keep pre-checkout errors in-place; do not switch to error stage here
-      setError(e.message || "Something went wrong");
+      setError(error.message || "Something went wrong");
     } finally {
       setLoading(false);
       setCaptchaToken(null);

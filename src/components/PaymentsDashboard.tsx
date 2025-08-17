@@ -53,9 +53,10 @@ const PaymentsDashboard: React.FC = () => {
         } else {
           throw new Error("Invalid API response format");
         }
-      } catch (err: any) {
-        console.error("❌ Failed to fetch payments from backend:", err.message);
-        setError(`Unable to connect to backend API: ${err.message}`);
+      } catch (err: unknown) {
+        const error = err as Error;
+        console.error("❌ Failed to fetch payments from backend:", error.message);
+        setError(`Unable to connect to backend API: ${error.message}`);
         setPayments([]);
       } finally {
         setLoading(false);
@@ -132,60 +133,98 @@ const PaymentsDashboard: React.FC = () => {
     });
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold text-gray-900">Razorpay Payments Dashboard</h1>
-          <div className="flex gap-4">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-3 py-2 border rounded-lg"
-            >
-              <option value="all">All Status</option>
-              <option value="captured">Successful</option>
-              <option value="failed">Failed</option>
-              <option value="created">Pending</option>
-            </select>
-            <select
-              value={amountSort}
-              onChange={(e) => setAmountSort(e.target.value as any)}
-              className="px-3 py-2 border rounded-lg"
-            >
-              <option value="default">Default Order</option>
-              <option value="low-to-high">Amount: Low to High</option>
-              <option value="high-to-low">Amount: High to Low</option>
-            </select>
-            <button
-              onClick={refreshData}
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-            >
-              {loading ? "Loading..." : "Refresh"}
-            </button>
+        {/* Responsive header layout */}
+        <div className="mb-4">
+          {/* Mobile: Stack everything vertically */}
+          <div className="block md:hidden">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Payments Dashboard</h1>
+            <div className="flex flex-col gap-3">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as "all" | "captured" | "failed" | "created")}
+                className="w-full px-3 py-2 border rounded-lg text-sm"
+              >
+                <option value="all">All Status</option>
+                <option value="captured">Successful</option>
+                <option value="failed">Failed</option>
+                <option value="created">Pending</option>
+              </select>
+              <select
+                value={amountSort}
+                onChange={(e) => setAmountSort(e.target.value as "default" | "low-to-high" | "high-to-low")}
+                className="w-full px-3 py-2 border rounded-lg text-sm"
+              >
+                <option value="default">Default Order</option>
+                <option value="low-to-high">Amount: Low to High</option>
+                <option value="high-to-low">Amount: High to Low</option>
+              </select>
+              <button
+                onClick={refreshData}
+                disabled={loading}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+              >
+                {loading ? "Loading..." : "Refresh"}
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop: Title on left, controls on right */}
+          <div className="hidden md:flex md:justify-between md:items-center">
+            <h1 className="text-3xl font-bold text-gray-900">Payments Dashboard</h1>
+            <div className="flex gap-4">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as "all" | "captured" | "failed" | "created")}
+                className="px-3 py-2 border rounded-lg text-sm"
+              >
+                <option value="all">All Status</option>
+                <option value="captured">Successful</option>
+                <option value="failed">Failed</option>
+                <option value="created">Pending</option>
+              </select>
+              <select
+                value={amountSort}
+                onChange={(e) => setAmountSort(e.target.value as "default" | "low-to-high" | "high-to-low")}
+                className="px-3 py-2 border rounded-lg text-sm"
+              >
+                <option value="default">Default Order</option>
+                <option value="low-to-high">Amount: Low to High</option>
+                <option value="high-to-low">Amount: High to Low</option>
+              </select>
+              <button
+                onClick={refreshData}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+              >
+                {loading ? "Loading..." : "Refresh"}
+              </button>
+            </div>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-900">Total Transactions</h3>
-            <p className="text-2xl font-bold text-blue-600">{uniquePayments.length}</p>
+        {/* Responsive statistics grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
+          <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+            <h3 className="text-sm sm:text-lg font-semibold text-blue-900">Total</h3>
+            <p className="text-xl sm:text-2xl font-bold text-blue-600">{uniquePayments.length}</p>
           </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-900">Successful</h3>
-            <p className="text-2xl font-bold text-green-600">{successfulPayments.length}</p>
+          <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
+            <h3 className="text-sm sm:text-lg font-semibold text-green-900">Successful</h3>
+            <p className="text-xl sm:text-2xl font-bold text-green-600">{successfulPayments.length}</p>
           </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-yellow-900">Pending</h3>
-            <p className="text-2xl font-bold text-yellow-600">{pendingPayments.length}</p>
+          <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg">
+            <h3 className="text-sm sm:text-lg font-semibold text-yellow-900">Pending</h3>
+            <p className="text-xl sm:text-2xl font-bold text-yellow-600">{pendingPayments.length}</p>
           </div>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-red-900">Failed</h3>
-            <p className="text-2xl font-bold text-red-600">{failedPayments.length}</p>
+          <div className="bg-red-50 p-3 sm:p-4 rounded-lg">
+            <h3 className="text-sm sm:text-lg font-semibold text-red-900">Failed</h3>
+            <p className="text-xl sm:text-2xl font-bold text-red-600">{failedPayments.length}</p>
           </div>
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-purple-900">Total Successful Amount</h3>
-            <p className="text-2xl font-bold text-purple-600">₹{(totalCapturedPaise / 100).toFixed(2)}</p>
+          <div className="bg-purple-50 p-3 sm:p-4 rounded-lg col-span-2 lg:col-span-1">
+            <h3 className="text-sm sm:text-lg font-semibold text-purple-900">Total Amount</h3>
+            <p className="text-xl sm:text-2xl font-bold text-purple-600">₹{(totalCapturedPaise / 100).toFixed(2)}</p>
           </div>
         </div>
       </div>
@@ -213,15 +252,63 @@ const PaymentsDashboard: React.FC = () => {
       
       {!loading && !error && filteredAndSortedPayments.length > 0 && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex justify-between items-center">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <h3 className="text-lg font-medium text-gray-900">Payment Transactions</h3>
               <span className="text-sm text-gray-500">
                 Showing {filteredAndSortedPayments.length} of {uniquePayments.length} payments
               </span>
             </div>
           </div>
-          <table className="w-full divide-y divide-gray-200">
+          
+          {/* Mobile Card Layout */}
+          <div className="block sm:hidden">
+            <div className="divide-y divide-gray-200">
+              {filteredAndSortedPayments.map((payment, index) => (
+                <div key={`${payment.order_id}-${payment.payment_id || index}`} className="p-4 hover:bg-gray-50">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-mono text-gray-900 truncate">
+                        {payment.order_id}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {payment.donor?.name || "Anonymous"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(payment.status)}`}>
+                        {payment.status}
+                      </span>
+                      <p className="text-lg font-bold text-gray-900 mt-1">
+                        ₹{payment.amount_rupees}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mt-3">
+                    <div>
+                      <span className="font-medium">Method:</span> {payment.method || "N/A"}
+                    </div>
+                    <div>
+                      <span className="font-medium">Contact:</span> {payment.contact || "N/A"}
+                    </div>
+                    <div className="col-span-2">
+                      <span className="font-medium">Email:</span> 
+                      <span className="ml-1 break-all">{payment.email || "N/A"}</span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="font-medium">Date:</span> {formatDate(payment.payment_created_at || payment.order_created_at)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Table Layout */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200"
+                   style={{ minWidth: '1200px' }}>
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
@@ -231,7 +318,7 @@ const PaymentsDashboard: React.FC = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donor</th>
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Email</th>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[180px] w-44">Date</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -264,13 +351,14 @@ const PaymentsDashboard: React.FC = () => {
                   <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
                     {payment.contact || "N/A"}
                   </td>
-                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 min-w-[180px] w-44">
                     {formatDate(payment.payment_created_at || payment.order_created_at)}
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       )}
     </div>

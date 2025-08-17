@@ -123,7 +123,6 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
 }) => {
   const [topRows, setTopRows] = React.useState<ApiDonation[] | null>(null);
   const [recentRows, setRecentRows] = React.useState<ApiDonation[] | null>(null);
-  const [_error, setError] = React.useState<string | null>(null);
 
   // load once with cache; StrictMode double-mount safe due to inflight promise
   React.useEffect(() => {
@@ -134,16 +133,18 @@ const InfiniteScrollDonors: React.FC<InfiniteScrollDonorsProps> = ({
       .then((top) => {
         if (mounted) setTopRows(top);
       })
-      .catch((e: any) => {
-        if (mounted) setError((prev) => prev ?? (e?.message ?? "Failed to load top payments"));
+      .catch((e: unknown) => {
+        const error = e as Error;
+        console.error("Failed to load top payments:", error.message);
       });
 
     fetchRecentPayments()
       .then((recent) => {
         if (mounted) setRecentRows(recent);
       })
-      .catch((e: any) => {
-        if (mounted) setError((prev) => prev ?? (e?.message ?? "Failed to load recent payments"));
+      .catch((e: unknown) => {
+        const error = e as Error;
+        console.error("Failed to load recent payments:", error.message);
       });
 
     return () => {
