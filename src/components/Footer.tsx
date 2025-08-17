@@ -6,9 +6,13 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto w-full">
                 <div className="flex flex-col md:flex-row flex-wrap justify-between">
                     <div className="basis-full md:basis-60 mb-8 md:mb-0">
-                        <h2 className="text-2xl font-bold text-teal-400 mb-4">
-                            सhara
-                        </h2>
+                        <div className="mb-1 -mt-7">
+                            <img 
+                                src="/sahara logo.png" 
+                                alt="Sahara Logo" 
+                                className="h-17 w-auto"
+                            />
+                        </div>
                         <p className="text-sm leading-relaxed">
                             Empowering kids through hands-on learning and <br />
                             creativity. Your support builds futures.
