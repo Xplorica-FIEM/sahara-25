@@ -23,15 +23,15 @@ const Hero = () => {
                         <span className="italic">change </span>it.
                     </span>
                 </h1>
-                <p className="mt-4 text-lg md:text-xl text-white">
+                {/* <p className="mt-4 text-lg md:text-xl text-white">
                     Join us in our mission to support those in need
-                </p>
-                <a
+                </p> */}
+                {/* <a
                     href="#donate"
                     className="mt-6 inline-block bg-teal-100 text-gray-800 px-6 py-3 text-shadow-none rounded-xl border border-teal-700 font-semibold hover:bg-teal-300 transition-colors shadow-xl"
                 >
                     Donate Now
-                </a>
+                </a> */}
             </div>
 
             {/* New bottom-right text */}
