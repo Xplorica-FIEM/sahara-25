@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import PaymentsStatistics from './PaymentsStatistics'; // Import the new component
 
 interface ApiDonation {
   order_id: string;
@@ -21,49 +22,68 @@ interface ApiDonation {
   receipt: string | null;
 }
 
+const PAGE_SIZE = 20; // Define page size for pagination
+
 const PaymentsDashboard: React.FC = () => {
   const [payments, setPayments] = useState<ApiDonation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPaymentsCount, setTotalPaymentsCount] = useState(0); // Total count from DB
+  const [hasMore, setHasMore] = useState(true); // Whether there are more pages to load
   const [statusFilter, setStatusFilter] = useState<"all" | "captured" | "failed" | "created">("all");
   const [amountSort, setAmountSort] = useState<"default" | "low-to-high" | "high-to-low">("default");
 
-  useEffect(() => {
-    const fetchPayments = async () => {
+  const fetchPayments = useCallback(async (pageToLoad: number, append: boolean = true) => {
       setLoading(true);
       setError(null);
       try {
-        const backendUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-        const res = await fetch(`${backendUrl}/all-payments-database`, {
-          method: "GET",
+        const backendUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"; // Ensure this matches your backend URL
+        const res = await fetch(`${backendUrl}/all-payments`, { // Updated endpoint
+          method: "POST", // Changed to POST
           headers: { 
             "Accept": "application/json",
             "Content-Type": "application/json"
           },
           credentials: "same-origin",
+          body: JSON.stringify({ page: pageToLoad, pageSize: PAGE_SIZE }) // Send page and pageSize
         });
         
         if (!res.ok) {
           throw new Error(`Backend API error: ${res.status} ${res.statusText}`);
         }
         
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          setPayments(json.data);
+        const json = await res.json(); // Expected: { success: true, page, pageSize, current_page_count, total_count, data: [...] }
+        if (json.success && Array.isArray(json.data)) { // Check for success and data array
+          if (append) {
+            setPayments(prev => [...prev, ...json.data]); // Append new payments
+          } else {
+            setPayments(json.data); // For initial load or refresh, replace all
+          }
+          setTotalPaymentsCount(json.total_count); // Update total count from backend
+          setHasMore(json.data.length === PAGE_SIZE); // Check if the number of records returned is equal to PAGE_SIZE
+          setCurrentPage(pageToLoad); // Update current page
         } else {
-          throw new Error("Invalid API response format");
+          throw new Error("Invalid API response format or success: false");
         }
       } catch (err: unknown) {
         const error = err as Error;
         console.error("❌ Failed to fetch payments from backend:", error.message);
         setError(`Unable to connect to backend API: ${error.message}`);
         setPayments([]);
+        setHasMore(false); // No more data if there's an error
       } finally {
         setLoading(false);
       }
-    };
-    fetchPayments();
-  }, []);
+  }, []); // Empty dependency array for useCallback
+
+  useEffect(() => {
+    fetchPayments(1, false); // Initial load, do not append
+  }, [fetchPayments]); // Dependency on fetchPayments
+
+  const handleLoadMore = () => {
+    fetchPayments(currentPage + 1);
+  };
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
@@ -72,33 +92,33 @@ const PaymentsDashboard: React.FC = () => {
       failed: "bg-red-100 text-red-800",
       refunded: "bg-gray-100 text-gray-800"
     };
-    return statusStyles[status as keyof typeof statusStyles] || "bg-gray-100 text-gray-800";
+    return statusStyles[status.toLowerCase() as keyof typeof statusStyles] || "bg-gray-100 text-gray-800";
   };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleString();
   };
-
-  // Remove duplicates first, then calculate statistics
-  const uniquePayments = payments.filter((payment, index, self) => 
-    index === self.findIndex(p => p.order_id === payment.order_id)
-  );
-
-  const successfulPayments = uniquePayments.filter(p => p.status === "captured");
-  const pendingPayments = uniquePayments.filter(p => p.status === "created");
-  const failedPayments = uniquePayments.filter(p => p.status === "failed");
-
-  const totalCapturedPaise = successfulPayments.reduce((sum, p) => sum + (p.amount_paise || 0), 0);
-
+  
   const refreshData = () => {
-    setLoading(true);
-    setError(null);
-    window.location.reload();
+    // Reset pagination and fetch first page
+    setCurrentPage(1);
+    setPayments([]); // Clear existing payments before refetching
+    setHasMore(true); // Assume there's more data on refresh
+    fetchPayments(1, false); // Fetch first page, do not append
   };
 
+  // Statistics based on currently loaded payments
+  const successfulPaymentsCount = payments.filter(p => p.status === "captured").length;
+  const pendingPaymentsCount = payments.filter(p => p.status === "created").length;
+  const failedPaymentsCount = payments.filter(p => p.status === "failed").length;
+
+  const totalCapturedPaise = payments
+    .filter(p => p.status === "captured")
+    .reduce((sum, p) => sum + (p.amount_paise || 0), 0);
+
   // Apply filters and sorting to unique payments
-  const filteredAndSortedPayments = uniquePayments
+  const filteredAndSortedPayments = payments // Operate on all loaded payments
     .filter(payment => {
       if (statusFilter === "all") return true;
       
@@ -120,16 +140,21 @@ const PaymentsDashboard: React.FC = () => {
       return paymentStatus === expectedStatus;
     })
     .sort((a, b) => {
-      if (amountSort === "default") return 0;
+      // Define amounts for comparison
       const amountA = a.amount_paise || 0;
       const amountB = b.amount_paise || 0;
-      
+
+      // Define dates for default comparison (most recent first)
+      const dateA = new Date(a.payment_created_at || a.order_created_at || 0).getTime();
+      const dateB = new Date(b.payment_created_at || b.order_created_at || 0).getTime();
+
       if (amountSort === "low-to-high") {
         return amountA - amountB;
       } else if (amountSort === "high-to-low") {
         return amountB - amountA;
       }
-      return 0;
+      // If amountSort is "default", sort by date (most recent first)
+      return dateB - dateA;
     });
 
   return (
@@ -205,37 +230,36 @@ const PaymentsDashboard: React.FC = () => {
         </div>
         
         {/* Responsive statistics grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
-          <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
-            <h3 className="text-sm sm:text-lg font-semibold text-blue-900">Total</h3>
-            <p className="text-xl sm:text-2xl font-bold text-blue-600">{uniquePayments.length}</p>
-          </div>
-          <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
-            <h3 className="text-sm sm:text-lg font-semibold text-green-900">Successful</h3>
-            <p className="text-xl sm:text-2xl font-bold text-green-600">{successfulPayments.length}</p>
-          </div>
-          <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg">
-            <h3 className="text-sm sm:text-lg font-semibold text-yellow-900">Pending</h3>
-            <p className="text-xl sm:text-2xl font-bold text-yellow-600">{pendingPayments.length}</p>
-          </div>
-          <div className="bg-red-50 p-3 sm:p-4 rounded-lg">
-            <h3 className="text-sm sm:text-lg font-semibold text-red-900">Failed</h3>
-            <p className="text-xl sm:text-2xl font-bold text-red-600">{failedPayments.length}</p>
-          </div>
-          <div className="bg-purple-50 p-3 sm:p-4 rounded-lg col-span-2 lg:col-span-1">
-            <h3 className="text-sm sm:text-lg font-semibold text-purple-900">Total Amount</h3>
-            <p className="text-xl sm:text-2xl font-bold text-purple-600">₹{(totalCapturedPaise / 100).toFixed(2)}</p>
-          </div>
-        </div>
+        <PaymentsStatistics
+          totalPaymentsCount={totalPaymentsCount}
+          successfulPaymentsCount={successfulPaymentsCount}
+          pendingPaymentsCount={pendingPaymentsCount}
+          failedPaymentsCount={failedPaymentsCount}
+          totalCapturedPaise={totalCapturedPaise}
+        />
       </div>
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline"> {error}</span>
+        </div>
+      )}
 
-      {!loading && !error && uniquePayments.length === 0 && (
+      {loading && payments.length === 0 && (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-700">Loading payments...</p>
+        </div>
+      )}
+
+      {!loading && !error && payments.length === 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
           <div className="text-gray-600">No payment data found</div>
         </div>
       )}
 
-      {!loading && !error && uniquePayments.length > 0 && filteredAndSortedPayments.length === 0 && (
+      {!loading && !error && payments.length > 0 && filteredAndSortedPayments.length === 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
           <div className="text-gray-600">No payments match your current filters</div>
           <button
@@ -256,7 +280,7 @@ const PaymentsDashboard: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <h3 className="text-lg font-medium text-gray-900">Payment Transactions</h3>
               <span className="text-sm text-gray-500">
-                Showing {filteredAndSortedPayments.length} of {uniquePayments.length} payments
+                Showing {filteredAndSortedPayments.length} of {totalPaymentsCount} payments
               </span>
             </div>
           </div>
@@ -359,6 +383,18 @@ const PaymentsDashboard: React.FC = () => {
             </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {hasMore && !error && (
+        <div className="text-center mt-6">
+          <button
+            onClick={handleLoadMore}
+            disabled={loading}
+            className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 transition-colors text-lg font-semibold"
+          >
+            {loading ? "Loading More..." : "Load More"}
+          </button>
         </div>
       )}
     </div>

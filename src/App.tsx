@@ -4,8 +4,8 @@ import Hero from "./components/Hero";
 import Works from "./components/Works";
 import Motivate from "./components/Motivate";
 import Footer from "./components/Footer";
-import PaymentsDashboard from "./components/PaymentsDashboard";
-import DashboardAccessControl from "./components/DashboardAccessControl";
+import PaymentsDashboard from "./components/Dashboard/PaymentsDashboard";
+import DashboardAccessControl from "./components/Dashboard/DashboardAccessControl";
 import { Analytics } from "@vercel/analytics/react";
 import CampaignOver from "./components/CampaignOver";
 
