@@ -6,12 +6,6 @@ const PaymentsDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | "captured" | "failed" | "created">("all");
   const [amountSort, setAmountSort] = useState<"default" | "low-to-high" | "high-to-low">("default");
 
-  const refreshData = () => {
-    // Reset filters and sort, which will trigger TransactionsTable to re-fetch
-    setStatusFilter("all");
-    setAmountSort("default");
-  };
-
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <div className="mb-6">
