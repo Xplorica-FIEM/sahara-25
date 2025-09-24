@@ -8,6 +8,7 @@ import PaymentsDashboard from "./components/Dashboard/PaymentsDashboard";
 import DashboardAccessControl from "./components/Dashboard/DashboardAccessControl";
 import { Analytics } from "@vercel/analytics/react";
 import CampaignOver from "./components/CampaignOver";
+import { ToastContainer } from "react-toastify";
 
 // Home page component
 const HomePage = () => (
@@ -37,6 +38,7 @@ const App = () => {
               <DashboardAccessControl>
                 <PaymentsDashboard />
                 <Footer />
+                 <ToastContainer />
               </DashboardAccessControl>
             }
           />

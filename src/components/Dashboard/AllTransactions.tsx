@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react'; // Import Search icon
 import Table from './Table'; // Import the new Table component
+import { toast } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for react-toastify
 
 
 export interface ApiDonation { // Exported for use in Table.tsx
@@ -64,25 +66,42 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
+  const [refreshingOrderId, setRefreshingOrderId] = useState<string | null>(null); // State to track which order is being refreshed
+  const [searchQuery, setSearchQuery] = useState<string>(''); // State for the input field value
+  const [activeSearchQuery, setActiveSearchQuery] = useState<string>(''); // State for the query that is actually being searched
 
-  const fetchPayments = useCallback(async (pageToLoad: number) => {
+  // Removed the debounce useEffect
+
+  const fetchPayments = useCallback(async (pageToLoad: number) => { // Simplified signature, now uses activeSearchQuery from state
       setLoading(true);
       setError(null);
       try {
         const backendUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-        const res = await fetch(`${backendUrl}/all-payments`, {
+        
+        let endpoint = `${backendUrl}/all-payments`;
+        let body: { [key: string]: any } = {
+          page: pageToLoad,
+          pageSize: PAGE_SIZE + 1,
+          statusFilter: statusFilter,
+          amountSort: amountSort
+        };
+
+        if (activeSearchQuery.trim().length >= 2) { // Use activeSearchQuery here
+          endpoint = `${backendUrl}/search-transactions`;
+          body = { query: activeSearchQuery }; // For search, we only send the query
+          // Note: The backend search-transactions currently doesn't support pagination,
+          // so we'll fetch all matching results and paginate them on the frontend.
+          // If backend search supported pagination, we'd add page/pageSize to body here.
+        }
+
+        const res = await fetch(endpoint, {
           method: "POST",
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
           },
           credentials: "same-origin",
-          body: JSON.stringify({
-            page: pageToLoad,
-            pageSize: PAGE_SIZE + 1,
-            statusFilter: statusFilter,
-            amountSort: amountSort
-          })
+          body: JSON.stringify(body)
         });
 
         if (!res.ok) {
@@ -92,10 +111,21 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           const fetchedData = json.data;
-          const hasMore = fetchedData.length > PAGE_SIZE;
-          setHasNextPage(hasMore);
-          setPayments(hasMore ? fetchedData.slice(0, PAGE_SIZE) : fetchedData);
-          setCurrentPage(pageToLoad);
+          
+          // Frontend pagination for search results if search is active
+          if (activeSearchQuery.trim().length >= 2) { // Use activeSearchQuery for this check
+            const startIndex = (pageToLoad - 1) * PAGE_SIZE;
+            const endIndex = startIndex + PAGE_SIZE;
+            setPayments(fetchedData.slice(startIndex, endIndex));
+            setHasNextPage(fetchedData.length > endIndex);
+            setCurrentPage(pageToLoad);
+          } else {
+            // Original pagination logic for all-payments
+            const hasMore = fetchedData.length > PAGE_SIZE;
+            setHasNextPage(hasMore);
+            setPayments(hasMore ? fetchedData.slice(0, PAGE_SIZE) : fetchedData);
+            setCurrentPage(pageToLoad);
+          }
         } else {
           throw new Error("Invalid API response format or success: false");
         }
@@ -108,19 +138,98 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
       } finally {
         setLoading(false);
       }
-  }, [statusFilter, amountSort]);
+  }, [statusFilter, amountSort, activeSearchQuery]); // Dependencies now include activeSearchQuery
+
+  // New function to handle refreshing a single transaction
+  const handleRefreshTransaction = useCallback(async (orderId: string) => {
+    setRefreshingOrderId(orderId); // Set loading for this specific order
+    try {
+      const backendUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const res = await fetch(`${backendUrl}/sync-order`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({ orderId })
+      });
+
+      if (!res.ok) {
+        throw new Error(`Backend API error: ${res.status} ${res.statusText}`);
+      }
+
+      const json = await res.json();
+      if (json.success && json.order) {
+        let statusChanged = false;
+        setPayments(prevPayments =>
+          prevPayments.map(p => {
+            if (p.order_id === orderId) {
+              const originalStatus = p.status; // Store original status
+              const updatedPayment = { ...p, status: json.order.status };
+
+              // Update donor details if available in the response
+              if (json.order.donor) {
+                updatedPayment.donor = {
+                  ...p.donor, // Keep existing if not overwritten
+                  name: json.order.donor.name || p.donor?.name || "Anonymous",
+                  email: json.order.donor.email || p.donor?.email || null,
+                  phone: json.order.donor.phone || p.donor?.phone || null,
+                };
+              }
+
+              // If a successful payment was found in the sync response, update more fields
+              if (json.payments && json.payments.successful_payment) {
+                const successfulPayment = json.payments.successful_payment;
+                updatedPayment.payment_id = successfulPayment.id;
+                updatedPayment.method = successfulPayment.method;
+                updatedPayment.captured = successfulPayment.captured;
+                // Note: payment_created_at is not directly returned in successful_payment,
+                // but the backend updates it. For a full update, a re-fetch of all payments
+                // or an enhanced /sync-order response would be needed.
+              }
+
+              if (originalStatus !== updatedPayment.status) {
+                statusChanged = true;
+              }
+              return updatedPayment;
+            }
+            return p;
+          })
+        );
+        if (statusChanged) {
+          toast.success(`Transaction ${orderId} status updated to ${getDisplayStatus(json.order.status)}!`);
+        } else {
+          toast.info(`Transaction ${orderId} is already up to date.`);
+        }
+      } else {
+        throw new Error("Invalid API response format or success: false from sync-order");
+      }
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(`❌ Failed to refresh order ${orderId}:`, error.message);
+      toast.error(`Failed to refresh transaction ${orderId}: ${error.message}`);
+    } finally {
+      setRefreshingOrderId(null); // Clear loading for this specific order
+    }
+  }, [getDisplayStatus]); // Added getDisplayStatus to dependencies
 
   useEffect(() => {
-    setCurrentPage(1);
-    fetchPayments(1);
-  }, [fetchPayments]);
+    setCurrentPage(1); // Reset to first page on filter/sort/activeSearchQuery change
+    fetchPayments(1); // fetchPayments will use the current activeSearchQuery
+  }, [fetchPayments, statusFilter, amountSort, activeSearchQuery]); // Added activeSearchQuery to dependencies
 
   const handlePageChange = (page: number) => {
     if (page < 1) return;
     if (page > currentPage && !hasNextPage) return;
 
     setCurrentPage(page);
-    fetchPayments(page);
+    fetchPayments(page); // fetchPayments will use the current activeSearchQuery
+  };
+
+  const handleSearchButtonClick = () => {
+    setCurrentPage(1); // Reset to first page
+    setActiveSearchQuery(searchQuery); // Update activeSearchQuery to trigger fetch
   };
 
   const displayStartIndex = (currentPage - 1) * PAGE_SIZE;
@@ -130,20 +239,64 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
       <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <h3 className="text-lg font-medium text-gray-900">Payment Transactions</h3>
-          {/* Refresh Button */}
-          <button
-            onClick={() => fetchPayments(currentPage)}
-            disabled={loading}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Refresh transactions"
-          >
-            {loading ? (
-              <RefreshCw className="animate-spin h-4 w-4 mr-2" />
-            ) : (
-              <RefreshCw className="h-4 w-4 mr-2" />
-            )}
-            Refresh
-          </button>
+          <div className="flex items-center gap-2"> {/* Wrapper for search and refresh */}
+            {/* Search Input */}
+            <div className="relative flex items-center"> {/* Added flex items-center here */}
+              <input
+                type="text"
+                placeholder="Search by donor, email, phone..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  // Do NOT reset currentPage or trigger search here.
+                  // Search will only trigger on button click or Enter key.
+                }}
+                onKeyPress={(e) => { // Added onKeyPress for Enter key
+                  if (e.key === 'Enter') {
+                    handleSearchButtonClick();
+                  }
+                }}
+                className="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setCurrentPage(1); // Reset page when clearing search
+                    setActiveSearchQuery(''); // Clear active search query immediately
+                  }}
+                  className="absolute inset-y-0 right-10 pr-3 flex items-center text-gray-400 hover:text-gray-600" // Adjusted right position
+                  aria-label="Clear search"
+                >
+                  &times;
+                </button>
+              )}
+              {/* Search Button */}
+              <button
+                onClick={handleSearchButtonClick}
+                disabled={loading}
+                className="ml-2 inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Perform search"
+              >
+                <Search className="h-4 w-4 sm:mr-2" /> {/* Icon always visible, text only on sm+ */}
+                <span className="hidden sm:inline">Search</span>
+              </button>
+            </div>
+            {/* Refresh Button */}
+            <button
+              onClick={() => fetchPayments(currentPage)}
+              disabled={loading}
+              className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Refresh transactions"
+            >
+              {loading ? (
+                <RefreshCw className="animate-spin h-4 w-4 sm:mr-2" />
+              ) : (
+                <RefreshCw className="h-4 w-4 sm:mr-2" />
+              )}
+              <span className="hidden sm:inline">Refresh</span> {/* Text only on sm+ */}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -186,14 +339,33 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
                       <p className="text-sm font-medium text-gray-900">{payment.donor?.name || "Anonymous"}</p>
                       <p className="text-xs text-gray-600 break-all mt-0.5">{payment.email || "N/A"}</p>
                     </div>
-                    {/* Amount & Status */}
+                    {/* Amount & Status & Refresh Button */}
                     <div className="flex flex-col items-end">
                       <p className="text-lg font-bold text-gray-900">
                         ₹{payment.amount_rupees}
                       </p>
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(payment.status)} mt-1`}>
-                        {getDisplayStatus(payment.status)}
-                      </span>
+                      <div className="flex items-center mt-1">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(payment.status)}`}>
+                          {getDisplayStatus(payment.status)}
+                        </span>
+                        {payment.status.toLowerCase() === 'created' && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent card click if any
+                              handleRefreshTransaction(payment.order_id);
+                            }}
+                            disabled={refreshingOrderId === payment.order_id}
+                            className="ml-2 p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label={`Refresh order ${payment.order_id}`}
+                          >
+                            {refreshingOrderId === payment.order_id ? (
+                              <RefreshCw className="animate-spin h-4 w-4" />
+                            ) : (
+                              <RefreshCw className="h-4 w-4" />
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -230,6 +402,8 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
             getStatusBadge={getStatusBadge}
             getDisplayStatus={getDisplayStatus}
             formatDate={formatDate}
+            handleRefreshTransaction={handleRefreshTransaction} // Pass the new prop
+            refreshingOrderId={refreshingOrderId} // Pass loading state
           />
         )}
 
