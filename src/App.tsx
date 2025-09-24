@@ -36,6 +36,7 @@ const App = () => {
             element={
               <DashboardAccessControl>
                 <PaymentsDashboard />
+                <Footer />
               </DashboardAccessControl>
             }
           />
