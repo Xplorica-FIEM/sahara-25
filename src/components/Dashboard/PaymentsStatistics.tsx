@@ -16,7 +16,7 @@ const PaymentsStatistics: React.FC = () => {
   useEffect(() => {
     const fetchStatistics = async () => {
       setLoading(true);
-      setError(null);
+      setError(null); // Clear previous errors on new fetch
       try {
         const backendUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
         const res = await fetch(`${backendUrl}/payments-stats`, {
@@ -41,6 +41,7 @@ const PaymentsStatistics: React.FC = () => {
       } catch (err: any) {
         setError("Failed to load statistics.");
         console.error("❌ Failed to fetch payment statistics:", err.message);
+        setStats(null); // Clear stats on error
       } finally {
         setLoading(false);
       }
@@ -49,39 +50,59 @@ const PaymentsStatistics: React.FC = () => {
     fetchStatistics();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="text-center p-4 text-gray-500">Loading statistics...</div>
-    );
-  }
-
-  if (error || !stats) {
-    return (
-      <div className="text-center p-4 bg-red-50 text-red-700 rounded-lg">{error || "Statistics data is unavailable."}</div>
-    );
-  }
-
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
-      <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
-        <h3 className="text-sm sm:text-lg font-semibold text-blue-900">Total Transactions</h3>
-        <p className="text-xl sm:text-2xl font-bold text-blue-600">{stats.total_transactions}</p>
-      </div>
-      <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
-        <h3 className="text-sm sm:text-lg font-semibold text-green-900">Successful</h3>
-        <p className="text-xl sm:text-2xl font-bold text-green-600">{stats.successful_transactions}</p>
-      </div>
-      <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg">
-        <h3 className="text-sm sm:text-lg font-semibold text-yellow-900">Pending </h3>
-        <p className="text-xl sm:text-2xl font-bold text-yellow-600">{stats.pending_transactions}</p>
-      </div>
-      <div className="bg-red-50 p-3 sm:p-4 rounded-lg">
-        <h3 className="text-sm sm:text-lg font-semibold text-red-900">Failed </h3>
-        <p className="text-xl sm:text-2xl font-bold text-red-600">{stats.failed_transactions}</p>
-      </div>
-      <div className="bg-purple-50 p-3 sm:p-4 rounded-lg col-span-2 lg:col-span-1">
-        <h3 className="text-sm sm:text-lg font-semibold text-purple-900">Total Amount</h3>
-        <p className="text-xl sm:text-2xl font-bold text-purple-600">₹{(stats.total_captured_amount_paise / 100).toFixed(2)}</p>
+    <div className="mb-6"> {/* Wrapper div for potential error message and stats grid */}
+      {error && (
+        <div className="text-center p-2 mb-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
+      )}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+        {/* Total Transactions */}
+        <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+          <h3 className="text-sm sm:text-lg font-semibold text-blue-900">Total Transactions</h3>
+          {loading ? (
+            <div className="h-6 bg-blue-200 rounded w-3/4 animate-pulse mt-1"></div>
+          ) : (
+            <p className="text-xl sm:text-2xl font-bold text-blue-600">{stats?.total_transactions ?? 'N/A'}</p>
+          )}
+        </div>
+        {/* Successful */}
+        <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
+          <h3 className="text-sm sm:text-lg font-semibold text-green-900">Successful</h3>
+          {loading ? (
+            <div className="h-6 bg-green-200 rounded w-3/4 animate-pulse mt-1"></div>
+          ) : (
+            <p className="text-xl sm:text-2xl font-bold text-green-600">{stats?.successful_transactions ?? 'N/A'}</p>
+          )}
+        </div>
+        {/* Pending */}
+        <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg">
+          <h3 className="text-sm sm:text-lg font-semibold text-yellow-900">Pending </h3>
+          {loading ? (
+            <div className="h-6 bg-yellow-200 rounded w-3/4 animate-pulse mt-1"></div>
+          ) : (
+            <p className="text-xl sm:text-2xl font-bold text-yellow-600">{stats?.pending_transactions ?? 'N/A'}</p>
+          )}
+        </div>
+        {/* Failed */}
+        <div className="bg-red-50 p-3 sm:p-4 rounded-lg">
+          <h3 className="text-sm sm:text-lg font-semibold text-red-900">Failed </h3>
+          {loading ? (
+            <div className="h-6 bg-red-200 rounded w-3/4 animate-pulse mt-1"></div>
+          ) : (
+            <p className="text-xl sm:text-2xl font-bold text-red-600">{stats?.failed_transactions ?? 'N/A'}</p>
+          )}
+        </div>
+        {/* Total Amount */}
+        <div className="bg-purple-50 p-3 sm:p-4 rounded-lg col-span-2 lg:col-span-1">
+          <h3 className="text-sm sm:text-lg font-semibold text-purple-900">Total Amount</h3>
+          {loading ? (
+            <div className="h-6 bg-purple-200 rounded w-3/4 animate-pulse mt-1"></div>
+          ) : (
+            <p className="text-xl sm:text-2xl font-bold text-purple-600">
+              {stats?.total_captured_amount_paise !== undefined ? `₹${(stats.total_captured_amount_paise / 100).toFixed(2)}` : 'N/A'}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

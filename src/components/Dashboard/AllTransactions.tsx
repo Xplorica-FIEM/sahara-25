@@ -244,18 +244,12 @@ const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountS
             <div className="relative flex items-center"> {/* Added flex items-center here */}
               <input
                 type="text"
-                placeholder="Search by donor, email, phone..."
+                placeholder="Search by name, email, phone..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  // Do NOT reset currentPage or trigger search here.
-                  // Search will only trigger on button click or Enter key.
                 }}
-                onKeyPress={(e) => { // Added onKeyPress for Enter key
-                  if (e.key === 'Enter') {
-                    handleSearchButtonClick();
-                  }
-                }}
+                
                 className="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
               {searchQuery && (
