@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'; // Add useState, useEffect, useCallback
+import React, { useState, useEffect, useCallback } from 'react';
+import { RefreshCw } from 'lucide-react';
+import Table from './Table'; // Import the new Table component
 
-interface ApiDonation {
+
+export interface ApiDonation { // Exported for use in Table.tsx
   order_id: string;
   payment_id: string | null;
   status: string;
@@ -21,13 +24,12 @@ interface ApiDonation {
   receipt: string | null;
 }
 
-interface TransactionsTableProps {
-  // Removed: payments, totalPaymentsCount, currentPage, itemsPerPage, onPageChange
-  statusFilter: "all" | "captured" | "failed" | "created"; // New prop: filter from parent
-  amountSort: "default" | "low-to-high" | "high-to-low"; // New prop: sort from parent
+interface AllTransactionsProps {
+  statusFilter: "all" | "captured" | "failed" | "created";
+  amountSort: "default" | "low-to-high" | "high-to-low";
 }
 
-const PAGE_SIZE = 20; // Define page size for pagination within the component
+const PAGE_SIZE = 20;
 
 const getStatusBadge = (status: string) => {
   const statusStyles = {
@@ -56,13 +58,12 @@ const getDisplayStatus = (status: string) => {
   }
 };
 
-const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amountSort }) => {
+const AllTransactions: React.FC<AllTransactionsProps> = ({ statusFilter, amountSort }) => {
   const [payments, setPayments] = useState<ApiDonation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  // Removed: const [totalPaymentsCount, setTotalPaymentsCount] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false); // New state to track if there's a next page
+  const [hasNextPage, setHasNextPage] = useState(false);
 
   const fetchPayments = useCallback(async (pageToLoad: number) => {
       setLoading(true);
@@ -78,9 +79,9 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
           credentials: "same-origin",
           body: JSON.stringify({
             page: pageToLoad,
-            pageSize: PAGE_SIZE + 1, // Request one more item than PAGE_SIZE to check for next page
-            statusFilter: statusFilter, // Pass filter to backend
-            amountSort: amountSort // Pass sort to backend
+            pageSize: PAGE_SIZE + 1,
+            statusFilter: statusFilter,
+            amountSort: amountSort
           })
         });
 
@@ -91,9 +92,9 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           const fetchedData = json.data;
-          const hasMore = fetchedData.length > PAGE_SIZE; // If we got more than PAGE_SIZE, there's a next page
+          const hasMore = fetchedData.length > PAGE_SIZE;
           setHasNextPage(hasMore);
-          setPayments(hasMore ? fetchedData.slice(0, PAGE_SIZE) : fetchedData); // Display only PAGE_SIZE items
+          setPayments(hasMore ? fetchedData.slice(0, PAGE_SIZE) : fetchedData);
           setCurrentPage(pageToLoad);
         } else {
           throw new Error("Invalid API response format or success: false");
@@ -103,31 +104,25 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
         console.error("❌ Failed to fetch payments from backend:", error.message);
         setError(`Unable to connect to backend API: ${error.message}`);
         setPayments([]);
-        setHasNextPage(false); // No next page on error
+        setHasNextPage(false);
       } finally {
         setLoading(false);
       }
-  }, [statusFilter, amountSort]); // Add statusFilter and amountSort as dependencies for useCallback
+  }, [statusFilter, amountSort]);
 
   useEffect(() => {
-    // When statusFilter or amountSort props change, reset to page 1 and re-fetch
-    setCurrentPage(1); // Reset page to 1 when filters/sort change
+    setCurrentPage(1);
     fetchPayments(1);
-  }, [fetchPayments]); // fetchPayments is now a dependency, and it depends on statusFilter, amountSort
+  }, [fetchPayments]);
 
   const handlePageChange = (page: number) => {
-    // Only change page if it's a valid transition
-    if (page < 1) return; // Cannot go before page 1
-    if (page > currentPage && !hasNextPage) return; // Cannot go next if no next page
+    if (page < 1) return;
+    if (page > currentPage && !hasNextPage) return;
 
     setCurrentPage(page);
     fetchPayments(page);
   };
 
-  // Removed: const totalPages = Math.ceil(totalPaymentsCount / PAGE_SIZE);
-  // Removed: filteredAndSortedPayments logic as filtering/sorting is now assumed to be handled by backend
-
-  // Calculate the starting index for the current page's serial numbers
   const displayStartIndex = (currentPage - 1) * PAGE_SIZE;
 
   return (
@@ -135,6 +130,20 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
       <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <h3 className="text-lg font-medium text-gray-900">Payment Transactions</h3>
+          {/* Refresh Button */}
+          <button
+            onClick={() => fetchPayments(currentPage)}
+            disabled={loading}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Refresh transactions"
+          >
+            {loading ? (
+              <RefreshCw className="animate-spin h-4 w-4 mr-2" />
+            ) : (
+              <RefreshCw className="h-4 w-4 mr-2" />
+            )}
+            Refresh
+          </button>
         </div>
       </div>
 
@@ -168,7 +177,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
         {!error && payments.length > 0 && (
           <div className="block sm:hidden">
             <div className="divide-y divide-gray-200">
-              {payments.map((payment, index) => ( // Use 'payments' directly
+              {payments.map((payment, index) => (
                 <div key={`${payment.order_id}-${payment.payment_id || index}`} className="p-3 hover:bg-gray-50">
                   <div className="flex justify-between items-start mb-2">
                     {/* Serial Number, Donor Name & Email */}
@@ -215,47 +224,13 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
         {/* Desktop Table Layout */}
         {/* Render if there's data and no error, regardless of current loading state (to show old data while fetching new) */}
         {!error && payments.length > 0 && (
-          <div className="hidden sm:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200" style={{ minWidth: '1200px' }}>
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">Donor & Email</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[180px]">Date</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {payments.map((payment, index) => ( // Use 'payments' directly
-                  <tr key={`${payment.order_id}-${payment.payment_id || index}`} className="hover:bg-gray-50">
-                    {/* Serial Number */}
-                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{displayStartIndex + index + 1}</td>
-                    {/* Donor & Email */}
-                    <td className="px-4 py-2 text-sm text-gray-900 min-w-[200px]">
-                      <p className="font-medium">{payment.donor?.name || "Anonymous"}</p>
-                      <p className="text-gray-500 text-xs break-all">{payment.email || "N/A"}</p>
-                    </td>
-                    {/* Amount */}
-                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900 font-semibold">₹{payment.amount_rupees}</td>
-                    {/* Status */}
-                    <td className="px-3 py-2 whitespace-nowrap"><span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(payment.status)}`}>{getDisplayStatus(payment.status)}</span></td>
-                    {/* Date */}
-                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 min-w-[180px]">{formatDate(payment.payment_created_at || payment.order_created_at)}</td>
-                    {/* Contact */}
-                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">{payment.contact || "N/A"}</td>
-                    {/* Method */}
-                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">{payment.method || "N/A"}</td>
-                    {/* Order ID */}
-                    <td className="px-3 py-2 whitespace-nowrap text-sm font-mono text-gray-900">{payment.order_id}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table
+            payments={payments}
+            displayStartIndex={displayStartIndex}
+            getStatusBadge={getStatusBadge}
+            getDisplayStatus={getDisplayStatus}
+            formatDate={formatDate}
+          />
         )}
 
         {/* Loading Overlay: Appears when loading and there's existing data to show (and no error) */}
@@ -293,4 +268,4 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ statusFilter, amo
   );
 };
 
-export default TransactionsTable;
+export default AllTransactions;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PaymentsStatistics from './PaymentsStatistics';
-import TransactionsTable from "./TransactionsTable";
+import AllTransactions from "./AllTransactions";
 
 const PaymentsDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | "captured" | "failed" | "created">("all");
@@ -88,7 +88,7 @@ const PaymentsDashboard: React.FC = () => {
       </div>
       
       {/* Render TransactionsTable, passing only filter and sort props */}
-      <TransactionsTable 
+      <AllTransactions 
         statusFilter={statusFilter} 
         amountSort={amountSort} 
       />
