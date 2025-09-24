@@ -3,8 +3,6 @@ import PaymentsStatistics from './PaymentsStatistics';
 import AllTransactions from "./AllTransactions";
 
 const PaymentsDashboard: React.FC = () => {
-  const [statusFilter, setStatusFilter] = useState<"all" | "captured" | "failed" | "created">("all");
-  const [amountSort, setAmountSort] = useState<"default" | "low-to-high" | "high-to-low">("default");
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto">
@@ -30,8 +28,8 @@ const PaymentsDashboard: React.FC = () => {
       
       {/* Render TransactionsTable, passing only filter and sort props */}
       <AllTransactions 
-        statusFilter={statusFilter} 
-        amountSort={amountSort} 
+        statusFilter={"all"} 
+        amountSort={"default"} 
       />
     </div>
   );
