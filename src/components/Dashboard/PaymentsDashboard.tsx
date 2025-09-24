@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import PaymentsStatistics from './PaymentsStatistics';
+import React from "react";
 import AllTransactions from "./AllTransactions";
+import PaymentsStatistics from './PaymentsStatistics';
 
 const PaymentsDashboard: React.FC = () => {
 
